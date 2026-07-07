@@ -1,1 +1,22 @@
+# CMake build directories
 build/
+build_*/
+out/
+bin/
+
+# In-source CMake artifacts (in case you ever accidentally run cmake in the root)
+CMakeCache.txt
+CMakeFiles/
+Makefile
+cmake_install.cmake
+install_manifest.txt
+
+# Language Server / LSP data (highly recommended if you use clangd)
+compile_commands.json
+.cache/
+
+# Editor swap files and folders
+*.swp
+*.swo
+.vscode/
+.idea/
