@@ -1,0 +1,3 @@
+[submodule "external/aGrUM"]
+	path = external/aGrUM
+	url = https://github.com/agrumery/aGrUM
