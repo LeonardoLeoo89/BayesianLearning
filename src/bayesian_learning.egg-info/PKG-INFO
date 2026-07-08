@@ -1,3 +1,27 @@
+Metadata-Version: 2.4
+Name: bayesian_learning
+Version: 0.1.0
+Summary: A unified platform for learning Bayesian networks
+Author: Leonardo Premutico, Matteo Piscitello
+Project-URL: Homepage, https://github.com/LeonardoLeoo89/BayesianLearning
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: numpy
+Requires-Dist: pandas
+Requires-Dist: scipy
+Requires-Dist: scikit-learn
+Requires-Dist: networkx
+Requires-Dist: joblib
+Requires-Dist: numba
+Requires-Dist: matplotlib
+Requires-Dist: pyagrum
+Requires-Dist: causal-learn
+Requires-Dist: deap
+Requires-Dist: dagma
+Requires-Dist: torch
+Requires-Dist: jax
+Requires-Dist: jaxlib
+
 # Bayesian Learning Platform
 
 A unified platform for learning Bayesian networks, encompassing traditional algorithms (e.g., K2, PC, EM), genetic search extensions, and modern neural methods (e.g., DAG-GNN, GraN-DAG). The platform also includes a Monte Carlo data generation suite for producing synthetic datasets from Bayesian network descriptions.

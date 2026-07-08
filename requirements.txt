@@ -1,0 +1,15 @@
+numpy
+pandas
+scipy
+scikit-learn
+networkx
+joblib
+numba
+matplotlib
+pyagrum
+causal-learn
+deap
+dagma
+torch
+jax
+jaxlib

@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bayesian_learning"
+version = "0.1.0"
+description = "A unified platform for learning Bayesian networks"
+authors = [
+    {name = "Leonardo Premutico"},
+    {name = "Matteo Piscitello"}
+]
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy",
+    "pandas",
+    "scipy",
+    "scikit-learn",
+    "networkx",
+    "joblib",
+    "numba",
+    "matplotlib",
+    "pyagrum",
+    "causal-learn",
+    "deap",
+    "dagma",
+    "torch",
+    "jax",
+    "jaxlib",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/LeonardoLeoo89/BayesianLearning"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["bayesian_learning*"]

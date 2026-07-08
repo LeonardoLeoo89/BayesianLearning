@@ -1,22 +1,30 @@
-# CMake build directories
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Build and Packaging
 build/
-build_*/
-out/
-bin/
+dist/
+*.egg-info/
+.eggs/
 
-# In-source CMake artifacts (in case you ever accidentally run cmake in the root)
-CMakeCache.txt
-CMakeFiles/
-Makefile
-cmake_install.cmake
-install_manifest.txt
+# Testing and Coverage
+.pytest_cache/
+.coverage
+htmlcov/
 
-# Language Server / LSP data (highly recommended if you use clangd)
-compile_commands.json
-.cache/
-
-# Editor swap files and folders
-*.swp
-*.swo
+# Editor / IDE
 .vscode/
 .idea/
+*.swp
+*.swo
+
+# Environment variables
+.env
