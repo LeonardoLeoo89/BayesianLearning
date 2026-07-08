@@ -1,42 +1,20 @@
 # Bayesian Learning Platform
 
-A unified platform for learning Bayesian networks, encompassing traditional algorithms (e.g., K2, PC, EM), genetic search extensions, and modern neural methods (e.g., DAG-GNN, GraN-DAG). The platform also includes a Monte Carlo data generation suite for producing synthetic datasets from Bayesian network descriptions.
+A unified platform for learning Bayesian networks (K2, PC, EM) and modern neural causal methods (DAG-GNN, GraN-DAG), along with a synthetic data generation suite.
 
-## Setup Instructions
+## Quickstart
 
-### 1. Clone the repository
+We recommend using [`uv`](https://astral.sh/uv) for lightning-fast installation.
+
 ```bash
+# 1. Clone
 git clone https://github.com/LeonardoLeoo89/BayesianLearning.git
 cd BayesianLearning
-```
 
-### 2. Install and Setup with `uv`
-We highly recommend using [`uv`](https://github.com/astral-sh/uv) (an extremely fast Python package installer and resolver) to manage dependencies, especially since this project relies on heavy libraries like PyTorch and JAX.
-
-First, install `uv` if you haven't already:
-```bash
-curl -LsSf https://astral.sh/uv/install.sh | sh
-```
-
-Next, create the virtual environment and sync the dependencies in a single command. `uv` will automatically read the `pyproject.toml` and set everything up:
-
-```bash
+# 2. Setup environment & install dependencies
 uv venv
 uv pip install -e .
-```
 
-To activate the virtual environment so you can run the code:
-```bash
-source .venv/bin/activate  # On Linux/macOS
-# or `.venv\Scripts\activate` on Windows
-```
-
-### 3. Verify Installation
-You can verify the installation by running the main entry point:
-```bash
-python src/bayesian_learning/main.py
-```
-Alternatively, you can run it directly with `uv` without activating the environment:
-```bash
+# 3. Run
 uv run python src/bayesian_learning/main.py
 ```
