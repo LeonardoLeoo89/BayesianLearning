@@ -1,0 +1,6 @@
+[submodule "external/DAG-GNN"]
+	path = external/DAG-GNN
+	url = https://github.com/fishmoon1234/DAG-GNN
+[submodule "external/GraN-DAG"]
+	path = external/GraN-DAG
+	url = https://github.com/kurowasan/GraN-DAG
