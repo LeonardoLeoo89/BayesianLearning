@@ -26,7 +26,6 @@ dependencies = [
     "pandas-stubs~=3.0.3",
     "seaborn>=0.13.2",
     "py-tetrad",
-    "cdt>=0.6.0",
 ]
 
 [project.urls]
