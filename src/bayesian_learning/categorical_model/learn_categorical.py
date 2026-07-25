@@ -27,7 +27,7 @@ def learn_structure(location: str, algo: StructureAlgorithm) -> gum.BayesNet:
 
     match algo:
         case StructureAlgorithm.HILL_CLIMBING:
-            pass
+            learner
         case StructureAlgorithm.K2:
             pass
         case StructureAlgorithm.GENETIC_K2:
