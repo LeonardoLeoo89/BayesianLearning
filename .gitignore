@@ -28,3 +28,5 @@ htmlcov/
 
 # Environment variables
 .env
+gran_dag_local/
+dummy.csv
