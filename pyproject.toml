@@ -26,6 +26,7 @@ dependencies = [
     "pandas-stubs~=3.0.3",
     "seaborn>=0.13.2",
     "py-tetrad",
+    "gran-dag",
 ]
 
 [project.urls]
@@ -37,3 +38,4 @@ include = ["bayesian_learning*"]
 
 [tool.uv.sources]
 py-tetrad = { git = "https://github.com/cmu-phil/py-tetrad.git" }
+gran-dag = { git = "https://github.com/LeonardoLeoo89/GraN-DAG.git", rev = "master" }
