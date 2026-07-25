@@ -8,41 +8,32 @@ class StructureAlgorithm(Enum):
     STRUCTURAL_EM = auto()
     PC = auto()
     FCI = auto()
-    RFCI = auto()
+    # RFCI = auto() use PyTetrad
 
 class ParameterAlgorithm(Enum):
     MLE = auto()
-    EM = auto()
+    # EM = auto()
     BAYESIAN_DIRICHLET_PRIORS = auto()
     ROBUST_BAYESIAN_ESTIMATE = auto()
     SHRINKAGE_EXIMATOR = auto()
-    UNSPECIFIED = auto()
 
 def learn(location: str, structure_algo: StructureAlgorithm,
-    parameter_algo: ParameterAlgorithm = ParameterAlgorithm.UNSPECIFIED) -> gum.BayesNet:
+    parameter_algo: ParameterAlgorithm = ParameterAlgorithm.MLE) -> gum.BayesNet:
     return gum.BayesNet()
 
-def learn_structure(location: str, algo: StructureAlgorithm) -> gum.BayesNet:
+def learn_agrum(location: str, parameter_algo: ParameterAlgorithm) -> gum.BayesNet:
     learner: gum.BNLearner = gum.BNLearner(location)
+    match parameter_algo:
+        case ParameterAlgorithm.BAYESIAN_DIRICHLET_PRIORS:
+            learner.useDirichletPrior()
+        case ParameterAlgorithm.ROBUST_BAYESIAN_ESTIMATE:
+            pass
+        case ParameterAlgorithm.SHRINKAGE_EXIMATOR:
+            pass
+    return learner.learnBN()
 
-    match algo:
-        case StructureAlgorithm.HILL_CLIMBING:
-            learner
-        case StructureAlgorithm.K2:
-            pass
-        case StructureAlgorithm.GENETIC_K2:
-            pass
-        case StructureAlgorithm.STRUCTURAL_EM:
-            pass
-        case StructureAlgorithm.PC:
-            pass
-        case StructureAlgorithm.FCI:
-            pass
-        case StructureAlgorithm.RFCI:
-            pass
+def learn_causal(location: str):
+    pass
 
-
-    return gum.BayesNet()
-
-def learn_parameters(data, net: gum.BayesNet, algo: ParameterAlgorithm):
+def learn_parameters(location: str, parameter_algo: ParameterAlgorithm):
     pass
