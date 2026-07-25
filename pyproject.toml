@@ -25,6 +25,7 @@ dependencies = [
     "dagma",
     "torch",
     "pandas-stubs~=3.0.3",
+    "seaborn>=0.13.2",
 ]
 
 [project.urls]
