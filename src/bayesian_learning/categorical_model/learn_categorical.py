@@ -6,9 +6,6 @@ class StructureAlgorithm(Enum):
     K2 = auto()
     GENETIC_K2 = auto()
     STRUCTURAL_EM = auto()
-    DAGMA = auto()
-    DAG_GNN = auto()
-    GRAN_DAG = auto()
     PC = auto()
     FCI = auto()
     RFCI = auto()
@@ -37,12 +34,6 @@ def learn_structure(location: str, algo: StructureAlgorithm) -> gum.BayesNet:
             pass
         case StructureAlgorithm.STRUCTURAL_EM:
             pass
-        case StructureAlgorithm.DAGMA:
-            pass
-        case StructureAlgorithm.DAG_GNN:
-            pass
-        case StructureAlgorithm.GRAN_DAG:
-            pass
         case StructureAlgorithm.PC:
             pass
         case StructureAlgorithm.FCI:
@@ -54,3 +45,4 @@ def learn_structure(location: str, algo: StructureAlgorithm) -> gum.BayesNet:
     return gum.BayesNet()
 
 def learn_parameters(data, net: gum.BayesNet, algo: ParameterAlgorithm):
+    pass
