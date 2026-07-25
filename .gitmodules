@@ -1,0 +1,3 @@
+[submodule "external/GraN-DAG"]
+	path = external/GraN-DAG
+	url = https://github.com/kurowasan/GraN-DAG.git
