@@ -1,7 +1,4 @@
-import dis
-
 import pyagrum as gum
-from pytetrad.tools.TetradSearch import TetradSearch
 from typing import Any
 from jpype import JClass
 
@@ -15,21 +12,23 @@ class FailedCastException(Exception):
 
 def translate(tetrad: Any) -> gum.BayesNet:
     out: gum.BayesNet = gum.BayesNet()
-    map: dict[Any, int] = dict()
+    node_map: dict[Any, int] = dict()
     name: str
     for node in tetrad.getNodes():
         if not isinstance(node, DiscreteVariable):
             raise FailedCastException("The node is not a DiscreteVariable")
         name = node.getName()
-        map[node] = out.add(gum.LabelizedVariable(name, list(node.getCategories())))
+        node_map[node] = out.add(gum.LabelizedVariable(name, "", list(node.getCategories())))
 
     for edge in tetrad.getEdges():
         node1 = edge.getNode1()
         node2 = edge.getNode2()
-        if str(edge.getEndpoint1()) == "ARROW":
-            out.addArc(map[node2], map[node1])
-        elif str(edge.getEndpoint2()) == "ARROW":
-            out.addArc(map[node1], map[node2])
+        ep1_is_arrow = str(edge.getEndpoint1()) == "ARROW"
+        ep2_is_arrow = str(edge.getEndpoint2()) == "ARROW"
+        if ep1_is_arrow and not ep2_is_arrow:
+            out.addArc(node_map[node2], node_map[node1])
+        elif ep2_is_arrow and not ep1_is_arrow:
+            out.addArc(node_map[node1], node_map[node2])
         else:
             raise BrokenInvariantException("The tetrad graph is not a DAG")
 
