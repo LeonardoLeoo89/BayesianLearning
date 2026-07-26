@@ -1,18 +1,19 @@
 import pyagrum as gum
 import pandas as pd
+from typing import List, Dict, Set, Any
 
 def generate_ess_dataset(bn: gum.BayesNet, df: pd.DataFrame) -> pd.DataFrame:
     """
     E-step: Creates a weighted, completed dataset from partially observed data.
     """
-    ie = gum.LazyPropagation(bn)
-    completed_rows = []
-    variables = bn.names()
+    ie: gum.LazyPropagation = gum.LazyPropagation(bn)
+    completed_rows: List[Dict[str, Any]] = []
+    variables: tuple = bn.names()
     
     # Iterate through every row in our partially observed dataset
     for idx, row in df.iterrows():
-        observed = {}
-        missing = set()
+        observed: Dict[str, int] = {}
+        missing: Set[str] = set()
         
         # Sort variables into observed vs missing for this row
         for var in variables:
@@ -32,10 +33,10 @@ def generate_ess_dataset(bn: gum.BayesNet, df: pd.DataFrame) -> pd.DataFrame:
         # If there are missing variables, compute their joint posterior probability
         ie.setEvidence(observed)
         ie.makeInference()
-        jp = ie.jointPosterior(missing)
+        jp: gum.Potential = ie.jointPosterior(missing)
         
         # Iterate over all possible configurations of the missing variables
-        inst = gum.Instantiation(jp)
+        inst: gum.Instantiation = gum.Instantiation(jp)
         inst.setFirst()
         while not inst.end():
             prob = jp.get(inst)
@@ -60,28 +61,28 @@ def structural_em(df_missing: pd.DataFrame, initial_bn: gum.BayesNet, max_iters:
     """
     Structural EM Algorithm loop.
     """
-    current_bn = initial_bn
+    current_bn: gum.BayesNet = initial_bn
     
     for t in range(max_iters):
         
         # ---------------------------------------------------------
         # Step 3: Optional Parameter Learning (EM for parameters)
         # ---------------------------------------------------------
-        learner_param = gum.BNLearner(df_missing)
+        learner_param: gum.BNLearner = gum.BNLearner(df_missing)
         learner_param.useEM(epsilon)
         current_bn = learner_param.learnParameters(current_bn.dag())
         
         # ---------------------------------------------------------
         # Step 4: Generate Expected Sufficient Statistics (E-Step)
         # ---------------------------------------------------------
-        df_ess = generate_ess_dataset(current_bn, df_missing)
+        df_ess: pd.DataFrame = generate_ess_dataset(current_bn, df_missing)
         
         # ---------------------------------------------------------
         # Step 5 & 6: Structure Learn & Estimate Parameters (M-Step)
         # ---------------------------------------------------------
         # Create a clean dataframe for the learner without the weight column
-        df_clean = df_ess.drop(columns=['_weight'])
-        learner_struct = gum.BNLearner(df_clean)
+        df_clean: pd.DataFrame = df_ess.drop(columns=['_weight'])
+        learner_struct: gum.BNLearner = gum.BNLearner(df_clean)
         
         # Apply the expected sufficient statistics as row weights
         for i, w in enumerate(df_ess['_weight']):
@@ -95,8 +96,8 @@ def structural_em(df_missing: pd.DataFrame, initial_bn: gum.BayesNet, max_iters:
             learner_struct.useScoreBDeu()
             
         # Learn the new DAG and parameters
-        new_dag = learner_struct.learnDAG()
-        new_bn = learner_struct.learnParameters(new_dag)
+        new_dag: gum.DAG = learner_struct.learnDAG()
+        new_bn: gum.BayesNet = learner_struct.learnParameters(new_dag)
         
         # Check for structural convergence (if the DAG hasn't changed)
         if new_dag.arcs() == current_bn.dag().arcs():
