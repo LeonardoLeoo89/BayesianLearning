@@ -8,7 +8,7 @@ def generate_ess_dataset(bn: gum.BayesNet, df: pd.DataFrame) -> pd.DataFrame:
     """
     ie: gum.LazyPropagation = gum.LazyPropagation(bn)
     completed_rows: List[Dict[str, Any]] = []
-    variables: tuple = bn.names()
+    variables = bn.names() # not out faults
     
     # Iterate through every row in our partially observed dataset
     for idx, row in df.iterrows():
@@ -18,7 +18,7 @@ def generate_ess_dataset(bn: gum.BayesNet, df: pd.DataFrame) -> pd.DataFrame:
         # Sort variables into observed vs missing for this row
         for var in variables:
             val = row[var]
-            if pd.isna(val) or val == '?' or val == '':
+            if pd.isna(val) or val is not None == '?' or val is not None == '':
                 missing.add(var)
             else:
                 observed[var] = int(val) # Cast to int assuming discrete categories
