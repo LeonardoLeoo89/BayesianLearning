@@ -8,11 +8,11 @@ def generate_ess_dataset(bn: gum.BayesNet, df: pd.DataFrame) -> pd.DataFrame:
     """
     ie: gum.LazyPropagation = gum.LazyPropagation(bn)
     completed_rows: List[Dict[str, Any]] = []
-    variables = bn.names() # not out faults
+    variables: tuple[str, ...] = bn.names() # type: ignore
     
     # Iterate through every row in our partially observed dataset
     for idx, row in df.iterrows():
-        observed: Dict[str, int] = {}
+        observed: Dict[str, Any] = {}
         missing: Set[str] = set()
         
         # Sort variables into observed vs missing for this row
@@ -21,11 +21,11 @@ def generate_ess_dataset(bn: gum.BayesNet, df: pd.DataFrame) -> pd.DataFrame:
             if pd.isna(val) or val is not None == '?' or val is not None == '':
                 missing.add(var)
             else:
-                observed[var] = int(val) # Cast to int assuming discrete categories
+                observed[var] = int(val) # type: ignore
                 
         # If the row is fully observed, we just keep it with a weight of 1
         if not missing:
-            row_dict = observed.copy()
+            row_dict: Dict[str, Any] = observed.copy()
             row_dict['_weight'] = 1.0
             completed_rows.append(row_dict)
             continue
@@ -33,7 +33,7 @@ def generate_ess_dataset(bn: gum.BayesNet, df: pd.DataFrame) -> pd.DataFrame:
         # If there are missing variables, compute their joint posterior probability
         ie.setEvidence(observed)
         ie.makeInference()
-        jp: gum.Potential = ie.jointPosterior(missing)
+        jp: Any = ie.jointPosterior(missing)
         
         # Iterate over all possible configurations of the missing variables
         inst: gum.Instantiation = gum.Instantiation(jp)
@@ -43,7 +43,7 @@ def generate_ess_dataset(bn: gum.BayesNet, df: pd.DataFrame) -> pd.DataFrame:
             
             # We only care about configurations with non-zero probability
             if prob > 0:
-                row_dict = observed.copy()
+                row_dict: Dict[str, Any] = observed.copy()
                 # Fill in the missing values with this specific configuration
                 for var in jp.names:
                     row_dict[var] = inst.val(var)
