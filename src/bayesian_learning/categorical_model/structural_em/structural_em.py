@@ -57,7 +57,7 @@ def generate_ess_dataset(bn: gum.BayesNet, df: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(completed_rows)
 
 
-def structural_em(df_missing: pd.DataFrame, initial_bn: gum.BayesNet, max_iters: int = 10, epsilon: float = 1e-3, score: str = 'bic') -> gum.BayesNet:
+def structural_em(df_missing: pd.DataFrame, initial_bn: gum.BayesNet, max_iters: int = 10, epsilon: float = 1e-3) -> gum.BayesNet:
     """
     Structural EM Algorithm loop.
     """
@@ -90,10 +90,6 @@ def structural_em(df_missing: pd.DataFrame, initial_bn: gum.BayesNet, max_iters:
             
         # Configure the structure learner
         learner_struct.useLocalSearchWithTabuList()
-        if score.lower() == 'bic':
-            learner_struct.useScoreBIC()
-        elif score.lower() == 'bdeu':
-            learner_struct.useScoreBDeu()
             
         # Learn the new DAG and parameters
         new_dag: gum.DAG = learner_struct.learnDAG()
