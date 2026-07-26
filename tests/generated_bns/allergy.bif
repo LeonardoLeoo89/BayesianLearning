@@ -1,0 +1,68 @@
+network "AllergyCrossReactivity" {
+// written by aGrUM 2.3.2
+}
+
+variable Atopy {
+   type discrete[2] {No, Yes};
+}
+
+variable DustMiteAllergy {
+   type discrete[2] {No, Yes};
+}
+
+variable PollenAllergy {
+   type discrete[2] {No, Yes};
+}
+
+variable BirchPollenAllergy {
+   type discrete[2] {No, Yes};
+}
+
+variable AppleAllergy {
+   type discrete[2] {No, Yes};
+}
+
+variable HazelnutAllergy {
+   type discrete[2] {No, Yes};
+}
+
+variable Asthma {
+   type discrete[2] {No, Yes};
+}
+
+variable AllergicRhinitis {
+   type discrete[2] {No, Yes};
+}
+
+probability (Atopy) {
+   table 0 0;
+}
+probability (DustMiteAllergy | Atopy) {
+   (No) 0 0;
+   (Yes) 0 0;
+}
+probability (PollenAllergy | Atopy) {
+   (No) 0 0;
+   (Yes) 0 0;
+}
+probability (BirchPollenAllergy | PollenAllergy) {
+   (No) 0 0;
+   (Yes) 0 0;
+}
+probability (AppleAllergy | BirchPollenAllergy) {
+   (No) 0 0;
+   (Yes) 0 0;
+}
+probability (HazelnutAllergy | BirchPollenAllergy) {
+   (No) 0 0;
+   (Yes) 0 0;
+}
+probability (Asthma | DustMiteAllergy) {
+   (No) 0 0;
+   (Yes) 0 0;
+}
+probability (AllergicRhinitis | PollenAllergy) {
+   (No) 0 0;
+   (Yes) 0 0;
+}
+

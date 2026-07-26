@@ -70,13 +70,9 @@ class GranDAGResult(SEMResult):
         if x.ndim == 1:
             x = x.unsqueeze(0)
         
-        # 1. Retrieve the learned parameters (weights, biases, and any extra parameters like variance)
+        # Retrieve the learned parameters (weights, biases, and any extra parameters like variance)
         weights, biases, extra_params = self.trained_model.get_parameters(mode="wbx")
-        
-        # 2. Forward pass to get density parameters (e.g., predicted means)
         density_params = self.trained_model.forward_given_params(x, weights, biases)
-        
-        # 3. Apply any necessary transformations to extra parameters (e.g., exponentiating log_std)
         if len(extra_params) != 0:
             transformed_extra = self.trained_model.transform_extra_params(self.trained_model.extra_params)
         else:
@@ -84,16 +80,14 @@ class GranDAGResult(SEMResult):
             
         distributions = []
         
-        # 4. Construct the PyTorch probability distribution for each variable
+        # Construct the PyTorch probability distribution for each variable
         for i in range(self.trained_model.num_vars):
-            # Extract the specific density parameters for this variable
             density_param = list(torch.unbind(density_params[i], 1))
             
-            # Append any global extra parameters for this variable (like std dev)
             if len(transformed_extra) != 0:
                 density_param.extend(list(torch.unbind(transformed_extra[i], 0)))
                 
-            # Create the PyTorch Distribution (e.g. Normal(mean, std))
+            # Create the PyTorch Distribution
             conditional_dist = self.trained_model.get_distribution(density_param)
             distributions.append(conditional_dist)
             

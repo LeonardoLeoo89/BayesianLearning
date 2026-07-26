@@ -1,0 +1,117 @@
+network "TrainDelay" {
+// written by aGrUM 2.3.2
+}
+
+variable Season {
+   type discrete[4] {Winter, Spring, Summer, Autumn};
+}
+
+variable Weather {
+   type discrete[4] {Clear, Rain, Snow, Storm};
+}
+
+variable TimeOfDay {
+   type discrete[4] {MorningRush, Midday, EveningRush, Night};
+}
+
+variable PassengerVolume {
+   type discrete[3] {Low, Normal, High};
+}
+
+variable TrackIncident {
+   type discrete[2] {False, True};
+}
+
+variable InfraFailure {
+   type discrete[2] {False, True};
+}
+
+variable SpeedRestriction {
+   type discrete[2] {False, True};
+}
+
+variable HubCongestion {
+   type discrete[2] {False, True};
+}
+
+variable DepartureDelay {
+   type discrete[3] {None, Minor, Major};
+}
+
+variable ArrivalDelay {
+   type discrete[3] {None, Minor, Major};
+}
+
+variable CompensationClaim {
+   type discrete[2] {False, True};
+}
+
+probability (Season) {
+   table 0 0 0 0;
+}
+probability (Weather | Season) {
+   (Winter) 0 0 0 0;
+   (Spring) 0 0 0 0;
+   (Summer) 0 0 0 0;
+   (Autumn) 0 0 0 0;
+}
+probability (TimeOfDay) {
+   table 0 0 0 0;
+}
+probability (PassengerVolume | TimeOfDay) {
+   (MorningRush) 0 0 0;
+   (Midday) 0 0 0;
+   (EveningRush) 0 0 0;
+   (Night) 0 0 0;
+}
+probability (TrackIncident | Weather) {
+   (Clear) 0 0;
+   (Rain) 0 0;
+   (Snow) 0 0;
+   (Storm) 0 0;
+}
+probability (InfraFailure | Weather, TrackIncident) {
+   (Clear, False) 0 0;
+   (Rain, False) 0 0;
+   (Snow, False) 0 0;
+   (Storm, False) 0 0;
+   (Clear, True) 0 0;
+   (Rain, True) 0 0;
+   (Snow, True) 0 0;
+   (Storm, True) 0 0;
+}
+probability (SpeedRestriction | Weather, TrackIncident) {
+   (Clear, False) 0 0;
+   (Rain, False) 0 0;
+   (Snow, False) 0 0;
+   (Storm, False) 0 0;
+   (Clear, True) 0 0;
+   (Rain, True) 0 0;
+   (Snow, True) 0 0;
+   (Storm, True) 0 0;
+}
+probability (HubCongestion | PassengerVolume) {
+   (Low) 0 0;
+   (Normal) 0 0;
+   (High) 0 0;
+}
+probability (DepartureDelay | InfraFailure, HubCongestion) {
+   (False, False) 0 0 0;
+   (True, False) 0 0 0;
+   (False, True) 0 0 0;
+   (True, True) 0 0 0;
+}
+probability (ArrivalDelay | DepartureDelay, SpeedRestriction) {
+   (None, False) 0 0 0;
+   (Minor, False) 0 0 0;
+   (Major, False) 0 0 0;
+   (None, True) 0 0 0;
+   (Minor, True) 0 0 0;
+   (Major, True) 0 0 0;
+}
+probability (CompensationClaim | ArrivalDelay) {
+   (None) 0 0;
+   (Minor) 0 0;
+   (Major) 0 0;
+}
+

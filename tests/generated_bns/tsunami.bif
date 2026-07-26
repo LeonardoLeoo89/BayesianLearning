@@ -1,0 +1,39 @@
+network "TsunamiRisk" {
+// written by aGrUM 2.3.2
+}
+
+variable Earthquake {
+   type discrete[2] {Low, High};
+}
+
+variable UnderseaLocation {
+   type discrete[2] {False, True};
+}
+
+variable TsunamiGeneration {
+   type discrete[2] {False, True};
+}
+
+variable CoastalAlarm {
+   type discrete[2] {Inactive, Active};
+}
+
+probability (Earthquake) {
+   table 0 0;
+}
+probability (UnderseaLocation) {
+   table 0 0;
+}
+probability (TsunamiGeneration | Earthquake, UnderseaLocation) {
+   (Low, False) 0 0;
+   (High, False) 0 0;
+   (Low, True) 0 0;
+   (High, True) 0 0;
+}
+probability (CoastalAlarm | TsunamiGeneration, Earthquake) {
+   (False, Low) 0 0;
+   (True, Low) 0 0;
+   (False, High) 0 0;
+   (True, High) 0 0;
+}
+
