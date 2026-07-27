@@ -2,104 +2,94 @@ import pyagrum as gum
 import pandas as pd
 from typing import List, Dict, Set, Any
 
+MAX_ITERS: float | int = float("inf")
+EPSILON: float | int = 1e-3
+
 def generate_ess_dataset(bn: gum.BayesNet, df: pd.DataFrame) -> pd.DataFrame:
-    """
-    E-step: Creates a weighted, completed dataset from partially observed data.
-    """
     ie: gum.LazyPropagation = gum.LazyPropagation(bn)
     completed_rows: List[Dict[str, Any]] = []
     variables: tuple[str, ...] = bn.names() # type: ignore
-    
-    # Iterate through every row in our partially observed dataset
+
+    observed: Dict[str, float | int]
+    missing: Set[str]
+    prob: float
+    row_dict: Dict[str, float | int]
+    inst: gum.Instantiation
+    jp: gum.Tensor
     for idx, row in df.iterrows():
-        observed: Dict[str, Any] = {}
-        missing: Set[str] = set()
+        observed= {}
+        missing = set()
         
-        # Sort variables into observed vs missing for this row
         for var in variables:
             val = row[var]
-            if pd.isna(val) or val is not None == '?' or val is not None == '':
+            if pd.isna(val) or val == '?' or val == '':
                 missing.add(var)
             else:
                 observed[var] = int(val) # type: ignore
-                
-        # If the row is fully observed, we just keep it with a weight of 1
+
         if not missing:
-            row_dict: Dict[str, Any] = observed.copy()
-            row_dict['_weight'] = 1.0
+            row_dict = observed.copy()
+            row_dict["_weight"] = 1.0
             completed_rows.append(row_dict)
             continue
             
         # If there are missing variables, compute their joint posterior probability
         ie.setEvidence(observed)
         ie.makeInference()
-        jp: Any = ie.jointPosterior(missing)
+        jp = ie.jointPosterior(missing)
         
         # Iterate over all possible configurations of the missing variables
-        inst: gum.Instantiation = gum.Instantiation(jp)
+        inst = gum.Instantiation(jp)
         inst.setFirst()
         while not inst.end():
             prob = jp.get(inst)
-            
-            # We only care about configurations with non-zero probability
+
             if prob > 0:
-                row_dict: Dict[str, Any] = observed.copy()
-                # Fill in the missing values with this specific configuration
+                row_dict = observed.copy()
                 for var in jp.names:
                     row_dict[var] = inst.val(var)
-                # The expected sufficient statistic is the probability (weight)
-                row_dict['_weight'] = prob
+                row_dict["_weight"] = prob
                 completed_rows.append(row_dict)
                 
             inst.inc()
-            
-    # Return as a new completed DataFrame
+
+
     return pd.DataFrame(completed_rows)
 
 
-def structural_em(df_missing: pd.DataFrame, initial_bn: gum.BayesNet, max_iters: int = 10, epsilon: float = 1e-3) -> gum.BayesNet:
+def structural_em(location: str, initial_bn: gum.BayesNet) -> gum.BayesNet:
     """
     Structural EM Algorithm loop.
     """
-    current_bn: gum.BayesNet = initial_bn
-    
-    for t in range(max_iters):
+    current: gum.BayesNet = initial_bn
+    learner: gum.BNLearner
+    new_dag: gum.DAG
+    new_bn: gum.BayesNet
+    df_missing: pd.DataFrame = pd.read_csv(location)
+    t: int = 0
+    while t < MAX_ITERS:
         
-        # ---------------------------------------------------------
-        # Step 3: Optional Parameter Learning (EM for parameters)
-        # ---------------------------------------------------------
-        learner_param: gum.BNLearner = gum.BNLearner(df_missing)
-        learner_param.useEM(epsilon)
-        current_bn = learner_param.learnParameters(current_bn.dag())
+        # parameter EM
+        learner = gum.BNLearner(df_missing)
+        learner.useEM(EPSILON)
+        current = learner.learnParameters(current.dag())
+
+        # e-step
+        df_ess: pd.DataFrame = generate_ess_dataset(current, df_missing)
         
-        # ---------------------------------------------------------
-        # Step 4: Generate Expected Sufficient Statistics (E-Step)
-        # ---------------------------------------------------------
-        df_ess: pd.DataFrame = generate_ess_dataset(current_bn, df_missing)
-        
-        # ---------------------------------------------------------
-        # Step 5 & 6: Structure Learn & Estimate Parameters (M-Step)
-        # ---------------------------------------------------------
-        # Create a clean dataframe for the learner without the weight column
+        # m-step
         df_clean: pd.DataFrame = df_ess.drop(columns=['_weight'])
         learner_struct: gum.BNLearner = gum.BNLearner(df_clean)
-        
-        # Apply the expected sufficient statistics as row weights
         for i, w in enumerate(df_ess['_weight']):
             learner_struct.setRecordWeight(i, float(w))
-            
-        # Configure the structure learner
+
         learner_struct.useLocalSearchWithTabuList()
-            
-        # Learn the new DAG and parameters
-        new_dag: gum.DAG = learner_struct.learnDAG()
-        new_bn: gum.BayesNet = learner_struct.learnParameters(new_dag)
-        
-        # Check for structural convergence (if the DAG hasn't changed)
-        if new_dag.arcs() == current_bn.dag().arcs():
-            current_bn = new_bn
+        new_dag = learner_struct.learnDAG()
+        new_bn = learner_struct.learnParameters(new_dag)
+
+        if new_dag.arcs() == current.dag().arcs():
             break
-            
-        current_bn = new_bn
+        current = new_bn
+        t += 1
         
-    return current_bn
+    return current

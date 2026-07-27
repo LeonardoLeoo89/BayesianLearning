@@ -1,10 +1,10 @@
-from re import match
-
 import pandas as pd
 import pyagrum as gum
 from enum import Enum, auto
 from pytetrad.tools.TetradSearch import TetradSearch
 from typing import Any
+
+from bayesian_learning.categorical_model.genetic_K2.genetic_K2 import genetic_k2
 
 ALPHA: float = 0.05
 
@@ -13,7 +13,6 @@ class InvalidBranchException(Exception):
 
 class StructureAlgorithm(Enum):
     HILL_CLIMBING = auto()
-    K2 = auto()
     GENETIC_K2 = auto()
     STRUCTURAL_EM = auto()
     PC = auto()
@@ -32,10 +31,9 @@ def learn(location: str, structure_algo: StructureAlgorithm,
     match structure_algo:
         case StructureAlgorithm.HILL_CLIMBING:
             pass
-        case StructureAlgorithm.K2:
-            pass
         case StructureAlgorithm.GENETIC_K2:
-            pass
+            bn, _ = genetic_k2(location)
+            return learn_parameters(location, bn, parameter_algo)
         case StructureAlgorithm.STRUCTURAL_EM:
             pass
         case StructureAlgorithm.PC:
@@ -52,8 +50,6 @@ def learn_agrum(location: str, structure_algo: StructureAlgorithm,
     match structure_algo:
         case StructureAlgorithm.HILL_CLIMBING:
             learner.useGreedyHillClimbing()
-        case StructureAlgorithm.K2:
-            learner.useK2()
         case _:
             raise InvalidBranchException(f"Unexpected algorithm \"{structure_algo}\"for pyAgrum learning")
     match parameter_algo:
@@ -88,4 +84,4 @@ def learn_parameters(location: str, structure: gum.BayesNet,
             pass
         case ParameterAlgorithm.SHRINKAGE_EXIMATOR:
             pass
-    return learner.learnParameters(structure)
+    return learner.learnParameters(structure.dag())
