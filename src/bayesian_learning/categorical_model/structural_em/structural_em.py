@@ -2,9 +2,6 @@ import pyagrum as gum
 import pandas as pd
 from typing import List, Dict, Set, Any
 
-MAX_ITERS: float | int = float("inf")
-EPSILON: float | int = 1e-3
-
 def generate_ess_dataset(bn: gum.BayesNet, df: pd.DataFrame) -> pd.DataFrame:
     ie: gum.LazyPropagation = gum.LazyPropagation(bn)
     completed_rows: List[Dict[str, Any]] = []
@@ -57,7 +54,9 @@ def generate_ess_dataset(bn: gum.BayesNet, df: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(completed_rows)
 
 
-def structural_em(location: str, initial_bn: gum.BayesNet) -> gum.BayesNet:
+def structural_em(location: str, initial_bn: gum.BayesNet,
+                  max_iters: float | int = float("inf"),
+                  epsilon: float | int = 1e-3) -> gum.BayesNet:
     """
     Structural EM Algorithm loop.
     """
@@ -67,11 +66,11 @@ def structural_em(location: str, initial_bn: gum.BayesNet) -> gum.BayesNet:
     new_bn: gum.BayesNet
     df_missing: pd.DataFrame = pd.read_csv(location)
     t: int = 0
-    while t < MAX_ITERS:
+    while t < max_iters:
         
         # parameter EM
         learner = gum.BNLearner(df_missing)
-        learner.useEM(EPSILON)
+        learner.useEM(epsilon)
         current = learner.learnParameters(current.dag())
 
         # e-step

@@ -3,10 +3,7 @@ import pyagrum as gum
 from enum import Enum, auto
 from pytetrad.tools.TetradSearch import TetradSearch
 from typing import Any
-
 from bayesian_learning.categorical_model.genetic_K2.genetic_K2 import genetic_k2
-
-ALPHA: float = 0.05
 
 class InvalidBranchException(Exception):
     pass
@@ -61,10 +58,11 @@ def learn_agrum(location: str, structure_algo: StructureAlgorithm,
             pass
     return learner.learnBN()
 
-def learn_tetrad(location: str, structure_algo: StructureAlgorithm) -> Any:
+def learn_tetrad(location: str, structure_algo: StructureAlgorithm,
+                 alpha: float = 0.05) -> Any:
     data: pd.DataFrame = pd.read_csv(location)
     search: TetradSearch = TetradSearch(data)
-    search.use_g_square(alpha=ALPHA)
+    search.use_g_square(alpha=alpha)
     match structure_algo:
         case StructureAlgorithm.PC:
             search.run_pc()

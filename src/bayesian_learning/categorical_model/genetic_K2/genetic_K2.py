@@ -6,52 +6,38 @@ import deap.creator as creator
 import deap.tools as tools
 import pyagrum as gum
 
-MAX_DEGREE: int = 4
-
-
-def cxOX2(ind1: list[int], ind2: list[int]) -> tuple[list[int], list[int]]:
-    """Order-based Crossover Operator (OX2).
-
-    Selects a random subset of positions in parent 2 and imposes their relative
-    order onto parent 1 (and vice-versa for parent 2), preserving the positions
-    of unselected elements.
-    """
-    size = len(ind1)
+def OX2(gen1: list[int], gen2: list[int]) -> tuple[list[int], list[int]]:
+    size: int = len(gen1)
     if size < 2:
-        return ind1, ind2
+        return gen1, gen2
 
     def _ox2_single(p1: list[int], p2: list[int]) -> list[int]:
-        k = random.randint(1, size - 1)
-        selected_positions = set(random.sample(range(size), k))
-        selected_elements = {p2[pos] for pos in selected_positions}
-        ordered_selected = [val for val in p2 if val in selected_elements]
+        k: int = random.randint(1, size - 1)
+        idx: int = 0
+        selected_positions: set[int] = set(random.sample(range(size), k))
+        selected_elements: set[int] = {p2[pos] for pos in selected_positions}
+        ordered_selected: list[int] = [val for val in p2 if val in selected_elements]
+        child: list[int] = [-1] * size
 
-        child: list[int | None] = [None] * size
         for i, val in enumerate(p1):
             if val not in selected_elements:
                 child[i] = val
 
-        idx = 0
         for i in range(size):
-            if child[i] is None:
+            if child[i] == -1:
                 child[i] = ordered_selected[idx]
                 idx += 1
-        return child  # type: ignore
+        return child
 
-    c1 = _ox2_single(ind1, ind2)
-    c2 = _ox2_single(ind2, ind1)
+    c1 = _ox2_single(gen1, gen2)
+    c2 = _ox2_single(gen2, gen1)
 
-    ind1[:] = c1
-    ind2[:] = c2
-    return ind1, ind2
+    gen1[:] = c1
+    gen2[:] = c2
+    return gen1, gen2
 
 
 def mutSIM(individual: list[int]) -> tuple[list[int]]:
-    """Simple-Inversion Mutation Operator (SIM).
-
-    Selects two cut points in the permutation individual at random and
-    reverses the slice between them.
-    """
     size = len(individual)
     if size < 2:
         return (individual,)
@@ -62,25 +48,18 @@ def mutSIM(individual: list[int]) -> tuple[list[int]]:
 
 
 def check_de_jong_convergence(
-    population: list[list[int]], alpha: float = 0.95, beta: float = 1.0
-) -> bool:
-    """Checks De Jong's population convergence criterion (Larrañaga et al., 1996).
-
-    - A gene (position) is converged if at least alpha fraction of individuals
-      have the exact same value at that position.
-    - The population is converged if at least beta fraction of genes have
-      converged.
-    """
+    population: list[list[int]], alpha: float = 0.95, beta: float = 1.0) -> bool:
     if not population:
         return False
-    pop_size = len(population)
-    num_genes = len(population[0])
+    pop_size: int = len(population)
+    num_genes: int = len(population[0])
     if pop_size == 0 or num_genes == 0:
         return False
+    converged_genes: int = 0
 
-    converged_genes = 0
+    counts: dict[int, int]
     for pos in range(num_genes):
-        counts: dict[int, int] = {}
+        counts = {}
         for ind in population:
             val = ind[pos]
             counts[val] = counts.get(val, 0) + 1
@@ -90,28 +69,15 @@ def check_de_jong_convergence(
     return (converged_genes / num_genes) >= beta
 
 
-def check_fitness_stagnation(
-    avg_fitness_history: list[float], patience: int = 10, tol: float = 1e-6
-) -> bool:
-    """Checks if the average fitness of the population has not improved over
-
-    `patience` generations (Larrañaga et al., 1996).
-    """
-    if len(avg_fitness_history) < patience + 1:
-        return False
-    recent = avg_fitness_history[-(patience + 1) :]
+def check_fitness_stagnation( avg_fitness_history: list[float], patience: int = 10,
+                              tol: float = 1e-6 ) -> bool:
+    if len(avg_fitness_history) < patience + 1: return False
+    recent: list[float] = avg_fitness_history[-(patience + 1) :]
     return (max(recent) - min(recent)) <= tol or recent[-1] <= recent[0] + tol
 
 
-def k2_apply(
-    location: str,
-    attributes: Sequence[str | int],
-    max_degree: int = MAX_DEGREE,
-) -> tuple[gum.BayesNet, float]:
-    """Runs pyAgrum's K2 structure learner with the given node attribute ordering.
-
-    Returns the learned BayesNet and its total score.
-    """
+def k2_apply( location: str, attributes: Sequence[str | int],
+    max_degree: int = MAX_DEGREE,) -> tuple[gum.BayesNet, float]:
     learner: gum.BNLearner = gum.BNLearner(location)
     node_ids = [
         learner.idFromName(a) if isinstance(a, str) else a for a in attributes
@@ -125,19 +91,11 @@ def k2_apply(
     return bn, score
 
 
-def genetic_k2(
-    location: str,
-    pop_size: int = 50,
-    ngen: int = 50,
-    cxpb: float = 0.8,
-    mutpb: float = 0.2,
-    tournsize: int = 3,
-    max_degree: int = MAX_DEGREE,
-    alpha: float = 0.95,
-    beta: float = 1.0,
-    patience: int = 10,
-    seed: int | None = None,
-) -> tuple[gum.BayesNet, float]:
+def genetic_k2( location: str, pop_size: int = 50, ngen: int = 50,
+                cxpb: float = 0.8, mutpb: float = 0.2, tournsize: int = 3,
+                max_degree: int = 4, alpha: float = 0.95,
+                beta: float = 1.0, patience: int = 10,
+                seed: int | None = None) -> tuple[gum.BayesNet, float]:
     """Learns a Bayesian Network structure using a Genetic Algorithm to optimize
 
     the K2 node ordering, employing OX2 crossover, SIM mutation, and stopping
@@ -145,12 +103,11 @@ def genetic_k2(
     Jong: alpha/beta gene convergence) 2) Average population fitness
     stagnation over `patience` generations.
     """
-    if seed is not None:
-        random.seed(seed)
+    if seed is not None: random.seed(seed)
 
-    learner = gum.BNLearner(location)
+    learner: gum.BNLearner = gum.BNLearner(location)
     var_names: list[str] = list(cast(Iterable[str], learner.names()))
-    num_vars = len(var_names)
+    num_vars: int = len(var_names)
 
     if num_vars == 0:
         raise ValueError(f"No variables found in dataset at '{location}'")
@@ -171,15 +128,14 @@ def genetic_k2(
     fitness_cache: dict[tuple[int, ...], float] = {}
 
     def evaluate(individual: list[int]) -> tuple[float]:
-        key = tuple(individual)
+        key: tuple[int, ...] = tuple(individual)
         if key in fitness_cache:
             return (fitness_cache[key],)
 
-        node_ids = list(key)
-        learner_inst = gum.BNLearner(location)
+        node_ids: list[int] = list(key)
+        learner_inst: gum.BNLearner = gum.BNLearner(location)
         learner_inst.useK2(node_ids)
-        if max_degree is not None:
-            learner_inst.setMaxIndegree(max_degree)
+        learner_inst.setMaxIndegree(max_degree)
         bn = learner_inst.learnBN()
         nodes_list: list[Any] = list(cast(Iterable[Any], bn.nodes()))
         score = sum(learner_inst.score(node) for node in nodes_list)
@@ -187,7 +143,7 @@ def genetic_k2(
         return (score,)
 
     toolbox.register("evaluate", evaluate)
-    toolbox.register("mate", cxOX2)
+    toolbox.register("mate", OX2)
     toolbox.register("mutate", mutSIM)
     toolbox.register("select", tools.selTournament, tournsize=tournsize)
     toolbox.register("clone", copy.deepcopy)
