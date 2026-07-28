@@ -25,7 +25,7 @@ def generate_ess_dataset(bn: gum.BayesNet, df: pd.DataFrame) -> pd.DataFrame:
             if pd.isna(val) or val == '?' or val == '':
                 missing.add(var)
             else:
-                observed[var] = int(val) # type: ignore
+                observed[var] = str(val)
 
         if not missing:
             row_dict = observed.copy()
@@ -35,6 +35,7 @@ def generate_ess_dataset(bn: gum.BayesNet, df: pd.DataFrame) -> pd.DataFrame:
             
         # If there are missing variables, compute their joint posterior probability
         ie.setEvidence(observed)
+        ie.addJointTarget(missing)
         ie.makeInference()
         jp = ie.jointPosterior(missing)
         
@@ -72,6 +73,7 @@ def structural_em(location: str, initial_bn: gum.BayesNet) -> gum.BayesNet:
         # parameter EM
         learner = gum.BNLearner(df_missing)
         learner.useEM(EPSILON)
+        learner.useSmoothingPrior(1.0)
         current = learner.learnParameters(current.dag())
 
         # e-step
@@ -84,6 +86,7 @@ def structural_em(location: str, initial_bn: gum.BayesNet) -> gum.BayesNet:
             learner_struct.setRecordWeight(i, float(w))
 
         learner_struct.useLocalSearchWithTabuList()
+        learner_struct.useSmoothingPrior(1.0)
         new_dag = learner_struct.learnDAG()
         new_bn = learner_struct.learnParameters(new_dag)
 

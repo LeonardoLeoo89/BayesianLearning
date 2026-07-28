@@ -1,7 +1,6 @@
 import pandas as pd
 import pyagrum as gum
 from enum import Enum, auto
-from pytetrad.tools.TetradSearch import TetradSearch
 from typing import Any
 
 from bayesian_learning.categorical_model.genetic_K2.genetic_K2 import genetic_k2
@@ -35,7 +34,16 @@ def learn(location: str, structure_algo: StructureAlgorithm,
             bn, _ = genetic_k2(location)
             return learn_parameters(location, bn, parameter_algo)
         case StructureAlgorithm.STRUCTURAL_EM:
-            pass
+            from bayesian_learning.categorical_model.structural_em.structural_em import structural_em
+            # We need an initial BayesNet. An empty one is usually a good start.
+            import pyagrum as gum
+            initial_bn = gum.BayesNet()
+            # We need variables to be initialized in the empty BN to match the dataset
+            import pandas as pd
+            df = pd.read_csv(location)
+            for col in df.columns:
+                initial_bn.add(gum.LabelizedVariable(col, col, [str(v) for v in df[col].dropna().unique()]))
+            return structural_em(location, initial_bn)
         case StructureAlgorithm.PC:
             pass
         case StructureAlgorithm.FCI:
@@ -62,6 +70,7 @@ def learn_agrum(location: str, structure_algo: StructureAlgorithm,
     return learner.learnBN()
 
 def learn_tetrad(location: str, structure_algo: StructureAlgorithm) -> Any:
+    from pytetrad.tools.TetradSearch import TetradSearch
     data: pd.DataFrame = pd.read_csv(location)
     search: TetradSearch = TetradSearch(data)
     search.use_g_square(alpha=ALPHA)
