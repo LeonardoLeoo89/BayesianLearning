@@ -30,3 +30,6 @@ htmlcov/
 .env
 gran_dag_local/
 dummy.csv
+
+tests/benchmark_results/
+tests/benchmark_graphs/

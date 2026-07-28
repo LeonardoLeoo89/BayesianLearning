@@ -1,10 +1,8 @@
-from .learn_sem import learn, learn_structure, learn_parameters, SEMAlgorithm
+from .learn_sem import learn_structure, SEMAlgorithm
 from .result import SEMResult, GranDAGResult
 
 __all__ = [
-    "learn",
     "learn_structure",
-    "learn_parameters",
     "SEMAlgorithm",
     "SEMResult",
     "GranDAGResult"
