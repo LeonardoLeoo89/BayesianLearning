@@ -1,18 +1,14 @@
-import pyagrum as gum
-import pandas as pd
 from typing import List, Dict, Set, Any
 
-def generate_ess_dataset(bn: gum.BayesNet, df: pd.DataFrame) -> pd.DataFrame:
-    ie: gum.LazyPropagation = gum.LazyPropagation(bn)
+def generate_ess_dataset(bn: Any, df: Any) -> Any:
+    import pyagrum as gum
+    import pandas as pd
+    ie = gum.LazyPropagation(bn)
     completed_rows: List[Dict[str, Any]] = []
     variables: tuple[str, ...] = bn.names() # type: ignore
 
-    observed: Dict[str, float | int]
+    observed: Dict[str, float | int | str]
     missing: Set[str]
-    prob: float
-    row_dict: Dict[str, float | int]
-    inst: gum.Instantiation
-    jp: gum.Tensor
     for idx, row in df.iterrows():
         observed= {}
         missing = set()
@@ -30,18 +26,15 @@ def generate_ess_dataset(bn: gum.BayesNet, df: pd.DataFrame) -> pd.DataFrame:
             completed_rows.append(row_dict)
             continue
             
-        # If there are missing variables, compute their joint posterior probability
         ie.setEvidence(observed)
         ie.addJointTarget(missing)
         ie.makeInference()
         jp = ie.jointPosterior(missing)
         
-        # Iterate over all possible configurations of the missing variables
         inst = gum.Instantiation(jp)
         inst.setFirst()
         while not inst.end():
             prob = jp.get(inst)
-
             if prob > 0:
                 row_dict = observed.copy()
                 for var in jp.names:
@@ -51,21 +44,19 @@ def generate_ess_dataset(bn: gum.BayesNet, df: pd.DataFrame) -> pd.DataFrame:
                 
             inst.inc()
 
-
     return pd.DataFrame(completed_rows)
 
 
-def structural_em(location: str, initial_bn: gum.BayesNet,
+def structural_em(location: str, initial_bn: Any,
                   max_iters: float | int = float("inf"),
-                  epsilon: float | int = 1e-3) -> gum.BayesNet:
+                  epsilon: float | int = 1e-3) -> Any:
     """
     Structural EM Algorithm loop.
     """
-    current: gum.BayesNet = initial_bn
-    learner: gum.BNLearner
-    new_dag: gum.DAG
-    new_bn: gum.BayesNet
-    df_missing: pd.DataFrame = pd.read_csv(location)
+    import pyagrum as gum
+    import pandas as pd
+    current = initial_bn
+    df_missing = pd.read_csv(location)
     t: int = 0
     while t < max_iters:
         
@@ -76,11 +67,11 @@ def structural_em(location: str, initial_bn: gum.BayesNet,
         current = learner.learnParameters(current.dag())
 
         # e-step
-        df_ess: pd.DataFrame = generate_ess_dataset(current, df_missing)
+        df_ess = generate_ess_dataset(current, df_missing)
         
         # m-step
-        df_clean: pd.DataFrame = df_ess.drop(columns=['_weight'])
-        learner_struct: gum.BNLearner = gum.BNLearner(df_clean)
+        df_clean = df_ess.drop(columns=['_weight'])
+        learner_struct = gum.BNLearner(df_clean)
         for i, w in enumerate(df_ess['_weight']):
             learner_struct.setRecordWeight(i, float(w))
 

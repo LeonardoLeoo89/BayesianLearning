@@ -1,8 +1,4 @@
-import pyagrum as gum
 from typing import Any
-from jpype import JClass
-
-DiscreteVariable: JClass = JClass("edu.cmu.tetrad.data.DiscreteVariable")
 
 class BrokenInvariantException(Exception):
     pass
@@ -10,8 +6,13 @@ class BrokenInvariantException(Exception):
 class FailedCastException(Exception):
     pass
 
-def translate(tetrad: Any) -> gum.BayesNet:
-    out: gum.BayesNet = gum.BayesNet()
+def translate(tetrad: Any) -> Any:
+    import pyagrum as gum
+    from jpype import JClass
+    
+    DiscreteVariable = JClass("edu.cmu.tetrad.data.DiscreteVariable")
+    
+    out = gum.BayesNet()
     node_map: dict[Any, int] = dict()
     name: str
     for node in tetrad.getNodes():

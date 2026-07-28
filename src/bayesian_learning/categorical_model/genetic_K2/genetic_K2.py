@@ -1,10 +1,8 @@
 import copy
 import random
 from typing import Any, Iterable, Sequence, cast
-import deap.base as base
-import deap.creator as creator
-import deap.tools as tools
-import pyagrum as gum
+
+MAX_DEGREE = 4 # default
 
 def OX2(gen1: list[int], gen2: list[int]) -> tuple[list[int], list[int]]:
     size: int = len(gen1)
@@ -76,16 +74,17 @@ def check_fitness_stagnation( avg_fitness_history: list[float], patience: int = 
     return (max(recent) - min(recent)) <= tol or recent[-1] <= recent[0] + tol
 
 
-def k2_apply( location: str, attributes: Sequence[str | int],
-    max_degree: int = MAX_DEGREE,) -> tuple[gum.BayesNet, float]:
-    learner: gum.BNLearner = gum.BNLearner(location)
+def k2_apply( location: str, attributes: Sequence[Any],
+    max_degree: int = MAX_DEGREE) -> tuple[Any, float]:
+    import pyagrum as gum
+    learner = gum.BNLearner(location)
     node_ids = [
         learner.idFromName(a) if isinstance(a, str) else a for a in attributes
     ]
     learner.useK2(node_ids)
     if max_degree is not None:
         learner.setMaxIndegree(max_degree)
-    bn: gum.BayesNet = learner.learnBN()
+    bn = learner.learnBN()
     nodes_list: list[Any] = list(cast(Iterable[Any], bn.nodes()))
     score: float = sum(learner.score(node) for node in nodes_list)
     return bn, score
@@ -95,17 +94,19 @@ def genetic_k2( location: str, pop_size: int = 50, ngen: int = 50,
                 cxpb: float = 0.8, mutpb: float = 0.2, tournsize: int = 3,
                 max_degree: int = 4, alpha: float = 0.95,
                 beta: float = 1.0, patience: int = 10,
-                seed: int | None = None) -> tuple[gum.BayesNet, float]:
+                seed: int | None = None) -> tuple[Any, float]:
     """Learns a Bayesian Network structure using a Genetic Algorithm to optimize
-
     the K2 node ordering, employing OX2 crossover, SIM mutation, and stopping
-    criteria based on Larrañaga et al. (1996): 1) Population convergence (De
-    Jong: alpha/beta gene convergence) 2) Average population fitness
-    stagnation over `patience` generations.
+    criteria based on Larrañaga et al. (1996).
     """
+    import deap.base as base
+    import deap.creator as creator
+    import deap.tools as tools
+    import pyagrum as gum
+
     if seed is not None: random.seed(seed)
 
-    learner: gum.BNLearner = gum.BNLearner(location)
+    learner = gum.BNLearner(location)
     var_names: list[str] = list(cast(Iterable[str], learner.names()))
     num_vars: int = len(var_names)
 
@@ -115,15 +116,13 @@ def genetic_k2( location: str, pop_size: int = 50, ngen: int = 50,
     if not hasattr(creator, "FitnessMax"):
         creator.create("FitnessMax", base.Fitness, weights=(1.0,))
     if not hasattr(creator, "Individual"):
-        creator.create("Individual", list, fitness=creator.FitnessMax)  # type: ignore[attr-defined]
+        creator.create("Individual", list, fitness=creator.FitnessMax)
 
     toolbox = base.Toolbox()
     indices_seq: list[int] = list(range(num_vars))
     toolbox.register("indices", random.sample, indices_seq, num_vars)
-    toolbox.register(
-        "individual", tools.initIterate, creator.Individual, toolbox.indices  # type: ignore[attr-defined]
-    )
-    toolbox.register("population", tools.initRepeat, list, toolbox.individual)  # type: ignore[attr-defined]
+    toolbox.register("individual", tools.initIterate, creator.Individual, toolbox.indices)
+    toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 
     fitness_cache: dict[tuple[int, ...], float] = {}
 
@@ -133,7 +132,7 @@ def genetic_k2( location: str, pop_size: int = 50, ngen: int = 50,
             return (fitness_cache[key],)
 
         node_ids: list[int] = list(key)
-        learner_inst: gum.BNLearner = gum.BNLearner(location)
+        learner_inst = gum.BNLearner(location)
         learner_inst.useK2(node_ids)
         learner_inst.setMaxIndegree(max_degree)
         bn = learner_inst.learnBN()
@@ -148,11 +147,11 @@ def genetic_k2( location: str, pop_size: int = 50, ngen: int = 50,
     toolbox.register("select", tools.selTournament, tournsize=tournsize)
     toolbox.register("clone", copy.deepcopy)
 
-    pop = toolbox.population(n=pop_size)  # type: ignore[attr-defined]
+    pop = toolbox.population(n=pop_size)
     hof = tools.HallOfFame(1)
 
     invalid_ind = [ind for ind in pop if not ind.fitness.valid]
-    fitnesses = [toolbox.evaluate(ind) for ind in invalid_ind]  # type: ignore[attr-defined]
+    fitnesses = [toolbox.evaluate(ind) for ind in invalid_ind]
     for ind, fit in zip(invalid_ind, fitnesses):
         ind.fitness.values = fit
 
@@ -160,12 +159,12 @@ def genetic_k2( location: str, pop_size: int = 50, ngen: int = 50,
     avg_fitness_history: list[float] = []
 
     for gen in range(1, ngen + 1):
-        offspring = toolbox.select(pop, len(pop))  # type: ignore[attr-defined]
-        offspring = [toolbox.clone(ind) for ind in offspring]  # type: ignore[attr-defined]
+        offspring = toolbox.select(pop, len(pop))
+        offspring = [toolbox.clone(ind) for ind in offspring]
 
         for i in range(1, len(offspring), 2):
             if random.random() < cxpb:
-                offspring[i - 1], offspring[i] = toolbox.mate(  # type: ignore[attr-defined]
+                offspring[i - 1], offspring[i] = toolbox.mate(
                     offspring[i - 1], offspring[i]
                 )
                 del offspring[i - 1].fitness.values
@@ -173,11 +172,11 @@ def genetic_k2( location: str, pop_size: int = 50, ngen: int = 50,
 
         for i in range(len(offspring)):
             if random.random() < mutpb:
-                offspring[i], = toolbox.mutate(offspring[i])  # type: ignore[attr-defined]
+                offspring[i], = toolbox.mutate(offspring[i])
                 del offspring[i].fitness.values
 
         invalid_ind = [ind for ind in offspring if not ind.fitness.valid]
-        fitnesses = [toolbox.evaluate(ind) for ind in invalid_ind]  # type: ignore[attr-defined]
+        fitnesses = [toolbox.evaluate(ind) for ind in invalid_ind]
         for ind, fit in zip(invalid_ind, fitnesses):
             ind.fitness.values = fit
 
@@ -187,12 +186,9 @@ def genetic_k2( location: str, pop_size: int = 50, ngen: int = 50,
         avg_fit = sum(ind.fitness.values[0] for ind in pop) / len(pop)
         avg_fitness_history.append(avg_fit)
 
-        # Stopping Criteria (Larrañaga et al., 1996):
-        # 1. Population Convergence (De Jong)
         if check_de_jong_convergence(pop, alpha=alpha, beta=beta):
             break
 
-        # 2. Lack of improvement in average fitness over `patience` generations
         if check_fitness_stagnation(avg_fitness_history, patience=patience):
             break
 
