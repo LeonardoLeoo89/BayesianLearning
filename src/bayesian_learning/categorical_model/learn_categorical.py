@@ -2,6 +2,7 @@ import pandas as pd
 import pyagrum as gum
 from enum import Enum, auto
 from typing import Any
+from pytetrad.tools.TetradSearch import TetradSearch
 from bayesian_learning.categorical_model.genetic_K2.genetic_K2 import genetic_k2
 
 class InvalidBranchException(Exception):
@@ -41,12 +42,8 @@ def learn(location: str, structure_algo: StructureAlgorithm,
             for col in df.columns:
                 initial_bn.add(gum.LabelizedVariable(col, col, [str(v) for v in df[col].dropna().unique()]))
             return structural_em(location, initial_bn)
-        case StructureAlgorithm.PC:
-            pass
-        case StructureAlgorithm.FCI:
-            pass
-        case StructureAlgorithm.RFCI:
-            pass
+        case StructureAlgorithm.PC | StructureAlgorithm.FCI | StructureAlgorithm.RFCI:
+            learn_tetrad(location, structure_algo, ) #TODO
     return gum.BayesNet()
 
 def learn_agrum(location: str, structure_algo: StructureAlgorithm,
