@@ -18,7 +18,7 @@ class StructureAlgorithm(Enum):
 
 class ParameterAlgorithm(Enum):
     MLE = auto()
-    # EM = auto()
+    EM = auto()
     BAYESIAN_DIRICHLET_PRIORS = auto()
     ROBUST_BAYESIAN_ESTIMATE = auto()
     SHRINKAGE_EXIMATOR = auto()
