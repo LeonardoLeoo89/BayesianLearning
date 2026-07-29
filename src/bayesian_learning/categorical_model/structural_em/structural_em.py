@@ -7,7 +7,7 @@ def generate_ess_dataset(bn: Any, df: Any) -> Any:
     completed_rows: List[Dict[str, Any]] = []
     variables: tuple[str, ...] = bn.names() # type: ignore
 
-    observed: Dict[str, float | int | str]
+    observed: Dict[str, Any]
     missing: Set[str]
     for idx, row in df.iterrows():
         observed= {}

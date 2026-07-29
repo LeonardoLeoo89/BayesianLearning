@@ -1,10 +1,6 @@
 from enum import Enum, auto
 from .result import SEMResult, GranDAGResult
-import numpy as np
-
-from .wrappers.dagma_wrapper import DagmaWrapper
-from .wrappers.gran_dag_wrapper import GraNDAGWrapper
-from .wrappers.dag_gnn_wrapper import DAGGNNWrapper
+from .wrappers import DagmaWrapper, GraNDAGWrapper, DAGGNNWrapper, SEMWrapper
 
 class SEMAlgorithm(Enum):
     DAGMA = auto()
@@ -25,6 +21,8 @@ def learn_structure(location: str, algo: SEMAlgorithm, **kwargs) -> SEMResult:
     """
     import pandas as pd
     data = pd.read_csv(location)
+    
+    wrapper: SEMWrapper
     
     match algo:
         case SEMAlgorithm.DAGMA:
