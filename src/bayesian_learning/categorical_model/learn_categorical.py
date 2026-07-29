@@ -16,8 +16,7 @@ class ParameterAlgorithm(Enum):
     MLE = auto()
     EM = auto()
     BAYESIAN_DIRICHLET_PRIORS = auto()
-    ROBUST_BAYESIAN_ESTIMATE = auto()
-    SHRINKAGE_EXIMATOR = auto()
+    SHRINKAGE_ESTIMATOR = auto()
 
 def learn(location: str, structure_algo: StructureAlgorithm,
     parameter_algo: ParameterAlgorithm = ParameterAlgorithm.MLE) -> Any:
@@ -63,9 +62,7 @@ def learn_agrum(location: str, structure_algo: StructureAlgorithm,
             learner.useSmoothingPrior(1.0)
         case ParameterAlgorithm.BAYESIAN_DIRICHLET_PRIORS:
             learner.useDirichletPrior()
-        case ParameterAlgorithm.ROBUST_BAYESIAN_ESTIMATE:
-            raise NotImplementedError("Robust Bayesian Estimate is not supported by pyAgrum.")
-        case ParameterAlgorithm.SHRINKAGE_EXIMATOR:
+        case ParameterAlgorithm.SHRINKAGE_ESTIMATOR:
             from bayesian_learning.categorical_model.parameter_learning.shrinkage import learn_shrinkage_parameters
             return learn_shrinkage_parameters(location, learner.learnBN())
     return learner.learnBN()
@@ -98,9 +95,7 @@ def learn_parameters(location: str, structure: Any,
             learner.useSmoothingPrior(1.0)
         case ParameterAlgorithm.BAYESIAN_DIRICHLET_PRIORS:
             learner.useDirichletPrior()
-        case ParameterAlgorithm.ROBUST_BAYESIAN_ESTIMATE:
-            raise NotImplementedError("Robust Bayesian Estimate is not supported by pyAgrum.")
-        case ParameterAlgorithm.SHRINKAGE_EXIMATOR:
+        case ParameterAlgorithm.SHRINKAGE_ESTIMATOR:
             from bayesian_learning.categorical_model.parameter_learning.shrinkage import learn_shrinkage_parameters
             return learn_shrinkage_parameters(location, structure)
     return learner.learnParameters(structure.dag())
