@@ -100,8 +100,11 @@ def genetic_k2( location: str, pop_size: int = 50, ngen: int = 50,
     criteria based on Larrañaga et al. (1996).
     """
     import deap.base as base
-    import deap.creator as creator
+    import deap.creator as _creator
     import deap.tools as tools
+    
+    # Type hint as Any to suppress IDE warnings for dynamically created attributes
+    creator: Any = _creator
     import pyagrum as gum
 
     if seed is not None: random.seed(seed)
@@ -118,7 +121,7 @@ def genetic_k2( location: str, pop_size: int = 50, ngen: int = 50,
     if not hasattr(creator, "Individual"):
         creator.create("Individual", list, fitness=creator.FitnessMax)
 
-    toolbox = base.Toolbox()
+    toolbox: Any = base.Toolbox()
     indices_seq: list[int] = list(range(num_vars))
     toolbox.register("indices", random.sample, indices_seq, num_vars)
     toolbox.register("individual", tools.initIterate, creator.Individual, toolbox.indices)

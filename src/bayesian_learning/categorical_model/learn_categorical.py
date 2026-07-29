@@ -66,7 +66,8 @@ def learn_agrum(location: str, structure_algo: StructureAlgorithm,
         case ParameterAlgorithm.ROBUST_BAYESIAN_ESTIMATE:
             raise NotImplementedError("Robust Bayesian Estimate is not supported by pyAgrum.")
         case ParameterAlgorithm.SHRINKAGE_EXIMATOR:
-            raise NotImplementedError("Shrinkage Estimator is not supported by pyAgrum.")
+            from bayesian_learning.categorical_model.parameter_learning.shrinkage import learn_shrinkage_parameters
+            return learn_shrinkage_parameters(location, learner.learnBN())
     return learner.learnBN()
 
 def learn_tetrad(location: str, structure_algo: StructureAlgorithm,
@@ -100,5 +101,6 @@ def learn_parameters(location: str, structure: Any,
         case ParameterAlgorithm.ROBUST_BAYESIAN_ESTIMATE:
             raise NotImplementedError("Robust Bayesian Estimate is not supported by pyAgrum.")
         case ParameterAlgorithm.SHRINKAGE_EXIMATOR:
-            raise NotImplementedError("Shrinkage Estimator is not supported by pyAgrum.")
+            from bayesian_learning.categorical_model.parameter_learning.shrinkage import learn_shrinkage_parameters
+            return learn_shrinkage_parameters(location, structure)
     return learner.learnParameters(structure.dag())
