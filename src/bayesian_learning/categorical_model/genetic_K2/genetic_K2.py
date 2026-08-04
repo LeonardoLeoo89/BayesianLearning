@@ -135,7 +135,7 @@ def genetic_k2( location: str, pop_size: int = 50, ngen: int = 50,
         if key in fitness_cache:
             return (fitness_cache[key],)
 
-        import os
+        import os #remove
         null_fd = os.open(os.devnull, os.O_WRONLY)
         saved_stderr_fd = os.dup(2)
         os.dup2(null_fd, 2)
@@ -162,8 +162,8 @@ def genetic_k2( location: str, pop_size: int = 50, ngen: int = 50,
     toolbox.register("select", tools.selTournament, tournsize=tournsize)
     toolbox.register("clone", copy.deepcopy)
 
-    pop = toolbox.population(n=pop_size)
-    hof = tools.HallOfFame(1)
+    pop: list[Any] = toolbox.population(n=pop_size)
+    hof: tools.HallOfFame = tools.HallOfFame(1)
 
     invalid_ind = [ind for ind in pop if not ind.fitness.valid]
     fitnesses = [toolbox.evaluate(ind) for ind in invalid_ind]
@@ -174,8 +174,7 @@ def genetic_k2( location: str, pop_size: int = 50, ngen: int = 50,
     avg_fitness_history: list[float] = []
 
     for gen in range(1, ngen + 1):
-        offspring = toolbox.select(pop, len(pop))
-        offspring = [toolbox.clone(ind) for ind in offspring]
+        offspring = [toolbox.clone(ind) for ind in toolbox.select(pop, len(pop))]
 
         for i in range(1, len(offspring), 2):
             if random.random() < cxpb:
