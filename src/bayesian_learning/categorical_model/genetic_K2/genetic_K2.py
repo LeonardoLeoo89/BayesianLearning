@@ -90,11 +90,12 @@ def k2_apply( location: str, attributes: Sequence[Any],
     return bn, score
 
 
+import pyagrum as gum
 def genetic_k2( location: str, pop_size: int = 50, ngen: int = 50,
                 cxpb: float = 0.8, mutpb: float = 0.2, tournsize: int = 3,
                 max_degree: int = 4, alpha: float = 0.95,
                 beta: float = 1.0, patience: int = 10,
-                seed: int | None = None) -> tuple[Any, float]:
+                seed: int | None = None) -> gum.BayesNet:
     """Learns a Bayesian Network structure using a Genetic Algorithm to optimize
     the K2 node ordering, employing OX2 crossover, SIM mutation, and stopping
     criteria based on Larrañaga et al. (1996).
@@ -105,7 +106,6 @@ def genetic_k2( location: str, pop_size: int = 50, ngen: int = 50,
     
     # Type hint as Any to suppress IDE warnings for dynamically created attributes
     creator: Any = _creator
-    import pyagrum as gum
 
     if seed is not None: random.seed(seed)
 
@@ -199,4 +199,4 @@ def genetic_k2( location: str, pop_size: int = 50, ngen: int = 50,
     best_bn, best_score = k2_apply(
         location, best_individual, max_degree=max_degree
     )
-    return best_bn, best_score
+    return best_bn

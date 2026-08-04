@@ -28,8 +28,7 @@ def learn(location: str, structure_algo: StructureAlgorithm,
             return learn_agrum(location, structure_algo, parameter_algo)
         case StructureAlgorithm.GENETIC_K2:
             from bayesian_learning.categorical_model.genetic_K2.genetic_K2 import genetic_k2
-            bn, _ = genetic_k2(location)
-            return learn_parameters(location, bn, parameter_algo)
+            return learn_parameters(location, genetic_k2(location), parameter_algo)
         case StructureAlgorithm.STRUCTURAL_EM:
             from bayesian_learning.categorical_model.structural_em.structural_em import structural_em
             import pandas as pd
@@ -43,7 +42,6 @@ def learn(location: str, structure_algo: StructureAlgorithm,
             tetrad_dag = learn_tetrad(location, structure_algo)
             bn = translate(tetrad_dag)
             return learn_parameters(location, bn, parameter_algo)
-    return gum.BayesNet()
 
 def learn_agrum(location: str, structure_algo: StructureAlgorithm,
                 parameter_algo: ParameterAlgorithm) -> Any:
