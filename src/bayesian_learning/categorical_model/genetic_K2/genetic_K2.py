@@ -135,24 +135,15 @@ def genetic_k2( location: str, pop_size: int = 50, ngen: int = 50,
         if key in fitness_cache:
             return (fitness_cache[key],)
 
-        import os
-        null_fd = os.open(os.devnull, os.O_WRONLY)
-        saved_stderr_fd = os.dup(2)
-        os.dup2(null_fd, 2)
-        try:
-            node_ids: list[int] = list(key)
-            learner_inst = gum.BNLearner(location)
-            learner_inst.useSmoothingPrior(1.0)
-            learner_inst.useK2(node_ids)
-            learner_inst.setMaxIndegree(max_degree)
-            bn = learner_inst.learnBN()
-            from typing import Any, Iterable, cast
-            nodes_list: list[Any] = list(cast(Iterable[Any], bn.nodes()))
-            score = sum(learner_inst.score(node) for node in nodes_list)
-        finally:
-            os.dup2(saved_stderr_fd, 2)
-            os.close(null_fd)
-            os.close(saved_stderr_fd)
+        node_ids: list[int] = list(key)
+        learner_inst = gum.BNLearner(location)
+        learner_inst.useSmoothingPrior(1.0)
+        learner_inst.useK2(node_ids)
+        learner_inst.setMaxIndegree(max_degree)
+        bn = learner_inst.learnBN()
+        from typing import Any, Iterable, cast
+        nodes_list: list[Any] = list(cast(Iterable[Any], bn.nodes()))
+        score = sum(learner_inst.score(node) for node in nodes_list)
         fitness_cache[key] = score
         return (score,)
 
