@@ -50,7 +50,7 @@ def generate_ess_dataset(bn: gum.BayesNet, df: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(completed_rows)
 
 def structural_em(location: str, initial_bn: gum.BayesNet,
-                  max_iters: float | int = float("inf"),
+                  max_iters: float | int = 10,
                   epsilon: float | int = 1e-3) -> gum.BayesNet:
     current: gum.BayesNet = initial_bn
     df_missing: pd.DataFrame = pd.read_csv(location)

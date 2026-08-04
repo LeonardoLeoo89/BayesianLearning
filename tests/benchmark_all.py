@@ -33,6 +33,14 @@ def subset_data(filepath: str, max_samples: int) -> str:
     df.to_csv(subset_path, index=False)
     return subset_path
 
+def standardize_sem_data(filepath: str) -> str:
+    """Standardizes continuous features to zero mean and unit variance."""
+    df = pd.read_csv(filepath)
+    df = (df - df.mean()) / df.std()
+    std_path = filepath.replace(".csv", "_std.csv")
+    df.to_csv(std_path, index=False)
+    return std_path
+
 def mask_data_generically(filepath: str, mask_frac: float = 0.3) -> str:
     """Masks 30% of the data in two random columns to test Structural EM."""
     df = pd.read_csv(filepath)
@@ -203,7 +211,8 @@ if __name__ == "__main__":
         filepath = os.path.join(SEM_DATA_DIR, f)
         print(f"Dataset: {f}")
         subset_path = subset_data(filepath, MAX_SAMPLES)
-        sem_results[f] = benchmark_sem(subset_path)
+        std_path = standardize_sem_data(subset_path)
+        sem_results[f] = benchmark_sem(std_path)
         
     # 3. Export raw data to CSV
     print("\n--- Saving Results ---")
