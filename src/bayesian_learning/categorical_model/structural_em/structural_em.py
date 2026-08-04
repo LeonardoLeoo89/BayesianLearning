@@ -1,16 +1,19 @@
 from typing import List, Dict, Set, Any
+import pyagrum as gum
+import pandas as pd
 
-def generate_ess_dataset(bn: Any, df: Any) -> Any:
-    import pyagrum as gum
-    import pandas as pd
-    ie = gum.LazyPropagation(bn)
+def generate_ess_dataset(bn: gum.BayesNet, df: pd.DataFrame) -> pd.DataFrame:
+    ie: gum.LazyPropagation = gum.LazyPropagation(bn)
     completed_rows: List[Dict[str, Any]] = []
     variables: tuple[str, ...] = bn.names() # type: ignore
-
     observed: Dict[str, Any]
     missing: Set[str]
+    jp: gum.Tensor
+    inst: gum.Instantiation
+    prob: float
+
     for idx, row in df.iterrows():
-        observed= {}
+        observed = {}
         missing = set()
         
         for var in variables:
@@ -46,18 +49,19 @@ def generate_ess_dataset(bn: Any, df: Any) -> Any:
 
     return pd.DataFrame(completed_rows)
 
-
-def structural_em(location: str, initial_bn: Any,
+def structural_em(location: str, initial_bn: gum.BayesNet,
                   max_iters: float | int = float("inf"),
-                  epsilon: float | int = 1e-3) -> Any:
-    """
-    Structural EM Algorithm loop.
-    """
-    import pyagrum as gum
-    import pandas as pd
-    current = initial_bn
-    df_missing = pd.read_csv(location)
+                  epsilon: float | int = 1e-3) -> gum.BayesNet:
+    current: gum.BayesNet = initial_bn
+    df_missing: pd.DataFrame = pd.read_csv(location)
     t: int = 0
+    learner: gum.BNLearner
+    df_ess: pd.DataFrame
+    df_clean: pd.DataFrame
+    learner_struct: gum.BNLearner
+    new_dag: gum.DAG
+    new_bn: gum.BayesNet
+
     while t < max_iters:
         
         # parameter EM

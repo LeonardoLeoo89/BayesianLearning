@@ -21,7 +21,6 @@ class ParameterAlgorithm(Enum):
 def learn(location: str, structure_algo: StructureAlgorithm,
     parameter_algo: ParameterAlgorithm = ParameterAlgorithm.MLE) -> Any:
     import pyagrum as gum
-    # check invalid combinations
     if structure_algo == StructureAlgorithm.STRUCTURAL_EM and parameter_algo != ParameterAlgorithm.EM:
         raise InvalidBranchException("STRUCTURAL_EM must be used with ParameterAlgorithm.EM")
     match structure_algo:
