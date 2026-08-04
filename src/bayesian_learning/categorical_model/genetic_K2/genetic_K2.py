@@ -77,6 +77,7 @@ def k2_apply( location: str, attributes: Sequence[Any],
     max_degree: int = 4) -> tuple[Any, float]:
     import pyagrum as gum
     learner: gum.BNLearner = gum.BNLearner(location)
+    learner.useSmoothingPrior(1.0)
     node_ids: list[int] = [
         learner.idFromName(a) if isinstance(a, str) else a for a in attributes
     ]
@@ -109,6 +110,7 @@ def genetic_k2( location: str, pop_size: int = 50, ngen: int = 50,
     if seed is not None: random.seed(seed)
 
     learner = gum.BNLearner(location)
+    learner.useSmoothingPrior(1.0)
     var_names: list[str] = list(cast(Iterable[str], learner.names()))
     num_vars: int = len(var_names)
 
@@ -133,13 +135,24 @@ def genetic_k2( location: str, pop_size: int = 50, ngen: int = 50,
         if key in fitness_cache:
             return (fitness_cache[key],)
 
-        node_ids: list[int] = list(key)
-        learner_inst = gum.BNLearner(location)
-        learner_inst.useK2(node_ids)
-        learner_inst.setMaxIndegree(max_degree)
-        bn = learner_inst.learnBN()
-        nodes_list: list[Any] = list(cast(Iterable[Any], bn.nodes()))
-        score = sum(learner_inst.score(node) for node in nodes_list)
+        import os
+        null_fd = os.open(os.devnull, os.O_WRONLY)
+        saved_stderr_fd = os.dup(2)
+        os.dup2(null_fd, 2)
+        try:
+            node_ids: list[int] = list(key)
+            learner_inst = gum.BNLearner(location)
+            learner_inst.useSmoothingPrior(1.0)
+            learner_inst.useK2(node_ids)
+            learner_inst.setMaxIndegree(max_degree)
+            bn = learner_inst.learnBN()
+            from typing import Any, Iterable, cast
+            nodes_list: list[Any] = list(cast(Iterable[Any], bn.nodes()))
+            score = sum(learner_inst.score(node) for node in nodes_list)
+        finally:
+            os.dup2(saved_stderr_fd, 2)
+            os.close(null_fd)
+            os.close(saved_stderr_fd)
         fitness_cache[key] = score
         return (score,)
 

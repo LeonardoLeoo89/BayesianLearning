@@ -56,7 +56,7 @@ def benchmark_categorical(filepath: str) -> Dict[str, Dict[str, Any]]:
         "PC (Tetrad)": (learn_tetrad, [StructureAlgorithm.PC]),
         "FCI (Tetrad)": (learn_tetrad, [StructureAlgorithm.FCI]),
         "RFCI (Tetrad)": (learn_tetrad, [StructureAlgorithm.RFCI]),
-        "Structural EM": (learn, [StructureAlgorithm.STRUCTURAL_EM, ParameterAlgorithm.MLE])
+        "Structural EM": (learn, [StructureAlgorithm.STRUCTURAL_EM, ParameterAlgorithm.EM])
     }
     
     for name, (func, args) in algorithms.items():

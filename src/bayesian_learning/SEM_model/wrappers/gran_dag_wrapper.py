@@ -19,6 +19,7 @@ class GraNDAGWrapper(SEMWrapper):
         
         # We import here so we don't fail immediately if GraN-DAG is not installed
         from gran_dag.trainer import GraNDAGTrainer
+        import torch
         
         n_samples, n_vars = data.shape
         
