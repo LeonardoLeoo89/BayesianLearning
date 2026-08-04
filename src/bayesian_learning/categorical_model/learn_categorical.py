@@ -20,9 +20,8 @@ class ParameterAlgorithm(Enum):
 
 def learn(location: str, structure_algo: StructureAlgorithm,
     parameter_algo: ParameterAlgorithm = ParameterAlgorithm.MLE) -> Any:
-    
     import pyagrum as gum
-    
+    # check invalid combinations
     match structure_algo:
         case StructureAlgorithm.HILL_CLIMBING:
             return learn_agrum(location, structure_algo, parameter_algo)
@@ -33,15 +32,14 @@ def learn(location: str, structure_algo: StructureAlgorithm,
             from bayesian_learning.categorical_model.structural_em.structural_em import structural_em
             import pandas as pd
             initial_bn = gum.BayesNet()
-            df = pd.read_csv(location)
+            df: pd.DataFrame = pd.read_csv(location)
             for col in df.columns:
                 initial_bn.add(gum.LabelizedVariable(col, col, [str(v) for v in df[col].dropna().unique()]))
             return structural_em(location, initial_bn)
         case StructureAlgorithm.PC | StructureAlgorithm.FCI | StructureAlgorithm.RFCI:
             from bayesian_learning.categorical_model.categorical_translator.tetrad2agrum import translate
             tetrad_dag = learn_tetrad(location, structure_algo)
-            bn = translate(tetrad_dag)
-            return learn_parameters(location, bn, parameter_algo)
+            return learn_parameters(location, translate(tetrad_dag), parameter_algo)
 
 def learn_agrum(location: str, structure_algo: StructureAlgorithm,
                 parameter_algo: ParameterAlgorithm) -> Any:
@@ -53,8 +51,6 @@ def learn_agrum(location: str, structure_algo: StructureAlgorithm,
         case _:
             raise InvalidBranchException(f"Unexpected algorithm \"{structure_algo}\" for pyAgrum learning")
     match parameter_algo:
-        case ParameterAlgorithm.MLE:
-            pass # Default in pyAgrum
         case ParameterAlgorithm.EM:
             learner.useEM(1e-3)
             learner.useSmoothingPrior(1.0)
@@ -86,8 +82,6 @@ def learn_parameters(location: str, structure: Any,
     import pyagrum as gum
     learner: gum.BNLearner = gum.BNLearner(location)
     match parameter_algo:
-        case ParameterAlgorithm.MLE:
-            pass # Default
         case ParameterAlgorithm.EM:
             learner.useEM(1e-3)
             learner.useSmoothingPrior(1.0)
