@@ -1,11 +1,8 @@
 import copy
-import math
 import random
 from typing import Any, Iterable, Sequence, cast
 
-MAX_DEGREE = 4 # default
-
-def OX2(gen1: list[int], gen2: list[int]) -> tuple[list[int], list[int]]:
+def ox2(gen1: list[int], gen2: list[int]) -> tuple[list[int], list[int]]:
     size: int = len(gen1)
     if size < 2:
         return gen1, gen2
@@ -28,16 +25,16 @@ def OX2(gen1: list[int], gen2: list[int]) -> tuple[list[int], list[int]]:
                 idx += 1
         return child
 
-    c1 = _ox2_single(gen1, gen2)
-    c2 = _ox2_single(gen2, gen1)
+    c1: list[int] = _ox2_single(gen1, gen2)
+    c2: list[int] = _ox2_single(gen2, gen1)
 
     gen1[:] = c1
     gen2[:] = c2
     return gen1, gen2
 
 
-def mutSIM(individual: list[int]) -> tuple[list[int]]:
-    size = len(individual)
+def mut_sim(individual: list[int]) -> tuple[list[int]]:
+    size: int = len(individual)
     if size < 2:
         return (individual,)
 
@@ -46,8 +43,8 @@ def mutSIM(individual: list[int]) -> tuple[list[int]]:
     return (individual,)
 
 
-def check_de_jong_convergence(
-    population: list[list[int]], alpha: float = 0.95, beta: float = 1.0) -> bool:
+def check_de_jong_convergence(population: list[list[int]], alpha: float = 0.95,
+                              beta: float = 1.0) -> bool:
     if not population:
         return False
     pop_size: int = len(population)
@@ -55,8 +52,9 @@ def check_de_jong_convergence(
     if pop_size == 0 or num_genes == 0:
         return False
     converged_genes: int = 0
-
     counts: dict[int, int]
+    val: int
+
     for pos in range(num_genes):
         counts = {}
         for ind in population:
@@ -72,20 +70,20 @@ def check_fitness_stagnation( avg_fitness_history: list[float], patience: int = 
                               tol: float = 1e-6 ) -> bool:
     if len(avg_fitness_history) < patience + 1: return False
     recent: list[float] = avg_fitness_history[-(patience + 1) :]
-    return (max(recent) - min(recent)) <= tol or recent[-1] <= recent[0] + tol
+    return (max(recent) - min(recent)) <= tol or recent[-1] - recent[0] <= tol
 
 
 def k2_apply( location: str, attributes: Sequence[Any],
-    max_degree: int = MAX_DEGREE) -> tuple[Any, float]:
+    max_degree: int = 4) -> tuple[Any, float]:
     import pyagrum as gum
-    learner = gum.BNLearner(location)
-    node_ids = [
+    learner: gum.BNLearner = gum.BNLearner(location)
+    node_ids: list[int] = [
         learner.idFromName(a) if isinstance(a, str) else a for a in attributes
     ]
     learner.useK2(node_ids)
     if max_degree is not None:
         learner.setMaxIndegree(max_degree)
-    bn = learner.learnBN()
+    bn: gum.BayesNet = learner.learnBN()
     nodes_list: list[Any] = list(cast(Iterable[Any], bn.nodes()))
     score: float = sum(learner.score(node) for node in nodes_list)
     return bn, score
@@ -146,8 +144,8 @@ def genetic_k2( location: str, pop_size: int = 50, ngen: int = 50,
         return (score,)
 
     toolbox.register("evaluate", evaluate)
-    toolbox.register("mate", OX2)
-    toolbox.register("mutate", mutSIM)
+    toolbox.register("mate", ox2)
+    toolbox.register("mutate", mut_sim)
     toolbox.register("select", tools.selTournament, tournsize=tournsize)
     toolbox.register("clone", copy.deepcopy)
 
