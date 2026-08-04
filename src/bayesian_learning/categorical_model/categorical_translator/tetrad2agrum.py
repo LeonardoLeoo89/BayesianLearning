@@ -10,14 +10,14 @@ def translate(tetrad: Any) -> Any:
     import pyagrum as gum
     from jpype import JClass
     
-    DiscreteVariable = JClass("edu.cmu.tetrad.data.DiscreteVariable")
+    discrete_variable = JClass("edu.cmu.tetrad.data.discrete_variable")
     
     out = gum.BayesNet()
     node_map: dict[Any, int] = dict()
     name: str
     for node in tetrad.getNodes():
-        if not isinstance(node, DiscreteVariable):
-            raise FailedCastException("The node is not a DiscreteVariable")
+        if not isinstance(node, discrete_variable):
+            raise FailedCastException("The node is not a discrete_variable")
         name = node.getName()
         node_map[node] = out.add(gum.LabelizedVariable(name, "", list(node.getCategories())))
 

@@ -1,37 +1,41 @@
 import pyagrum as gum
 import pandas as pd
+from pandas.core.series import Series
 import numpy as np
 from typing import Any
 
 def learn_shrinkage_parameters(location: str, bn: Any) -> Any:
-    """
-    Learns the Conditional Probability Tables (CPTs) of a Bayesian Network using 
-    the James-Stein Shrinkage Estimator (Hausser and Strimmer, 2009).
-    This adaptively shrinks the high-variance Maximum Likelihood (ML) estimates 
-    towards a low-variance uniform target based on the local sample size of 
-    each parent configuration.
-    """
-    df = pd.read_csv(location)
-    
-    # Ensure categorical columns are treated as strings
+    df: pd.DataFrame = pd.read_csv(location)
     for col in df.columns:
         df[col] = df[col].astype(str)
+
+    node_name: str
+    parents: list[str]
+    parent_vals: tuple
+    parent_dict: dict[str, str]
+    r_i: int
+    t_ijk: float
+    cpt: gum.Tensor
+    labels: list[str]
+    counts: Series[int]
+    n_i: int
+    n_ij: int
+    ml_estimates: np.ndarray
+    num: float
+    den: float
+    lambda_star: float
+    shrink_probs: np.ndarray
 
     for node_id in bn.nodes():
         node_name = bn.variable(node_id).name()
         parents = [bn.variable(p).name() for p in bn.parents(node_id)]
-        
         r_i = bn.variable(node_id).domainSize()
         t_ijk = 1.0 / r_i
-        
         cpt = bn.cpt(node_id)
-        # Initialize the entire CPT with the uniform target probability
         cpt.fillWith(t_ijk)
-        
         labels = bn.variable(node_id).labels()
         
         if not parents:
-            # Root node (marginal probabilities)
             counts = df[node_name].value_counts()
             n_i = counts.sum()
             
@@ -47,7 +51,6 @@ def learn_shrinkage_parameters(location: str, bn: Any) -> Any:
                 cpt[{}] = list(shrink_probs)
                 
         else:
-            # Child node (conditional probabilities)
             group_counts = df.groupby(parents)[node_name].value_counts().unstack(fill_value=0)
             
             for index_val, row in group_counts.iterrows():
@@ -68,12 +71,6 @@ def learn_shrinkage_parameters(location: str, bn: Any) -> Any:
                     lambda_star = min(1.0, max(0.0, lambda_star))
                     
                     shrink_probs = lambda_star * t_ijk + (1 - lambda_star) * ml_estimates
-                    
-                    try:
-                        cpt[parent_dict] = list(shrink_probs)
-                    except gum.pyagrum.InvalidArgument:
-                        # This happens if a parent configuration in the dataset has a value 
-                        # that was never registered in the domain of the BayesNet variable
-                        pass
 
+                    cpt[parent_dict] = list(shrink_probs)
     return bn
