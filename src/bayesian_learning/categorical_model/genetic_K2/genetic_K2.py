@@ -1,4 +1,5 @@
 import copy
+import math
 import random
 from typing import Any, Iterable, Sequence, cast
 
@@ -86,7 +87,8 @@ def k2_apply( location: str, attributes: Sequence[Any],
         learner.setMaxIndegree(max_degree)
     bn = learner.learnBN()
     nodes_list: list[Any] = list(cast(Iterable[Any], bn.nodes()))
-    score: float = sum(learner.score(node) for node in nodes_list)
+    raw_score: float = sum(learner.score(node) for node in nodes_list)
+    score: float = -math.log(-raw_score) if raw_score < 0 else raw_score
     return bn, score
 
 
@@ -140,7 +142,8 @@ def genetic_k2( location: str, pop_size: int = 50, ngen: int = 50,
         learner_inst.setMaxIndegree(max_degree)
         bn = learner_inst.learnBN()
         nodes_list: list[Any] = list(cast(Iterable[Any], bn.nodes()))
-        score = sum(learner_inst.score(node) for node in nodes_list)
+        raw_score = sum(learner_inst.score(node) for node in nodes_list)
+        score = -math.log(-raw_score) if raw_score < 0 else raw_score
         fitness_cache[key] = score
         return (score,)
 
