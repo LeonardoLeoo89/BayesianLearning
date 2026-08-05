@@ -60,9 +60,7 @@ def translate(tetrad: Any) -> Any:
             if counters[node] == 0: zeroes.add(node)
 
     if len(topologic_sort) != len(dag_copy):
-        raise BrokenInvariantException(
-            "The directed portion of the graph contains a cycle."
-        )
+        raise BrokenInvariantException("The directed portion of the graph contains a cycle.")
 
     for u, v in ambiguous:
         if topologic_sort[u] < topologic_sort[v]: out.addArc(u, v)
