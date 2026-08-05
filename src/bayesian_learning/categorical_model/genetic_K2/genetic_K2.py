@@ -143,7 +143,7 @@ def genetic_k2( location: str, pop_size: int = 50, ngen: int = 50,
     toolbox.register("evaluate", evaluate)
     toolbox.register("mate", ox2)
     toolbox.register("mutate", mut_sim)
-    toolbox.register("select", tools.selTournament, tournsize)
+    toolbox.register("select", tools.selTournament, tournsize=tournsize)
     toolbox.register("clone", copy.deepcopy)
 
     pop: list[Any] = toolbox.population(pop_size)

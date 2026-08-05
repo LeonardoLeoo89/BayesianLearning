@@ -91,4 +91,6 @@ def learn_parameters(location: str, structure: Any,
         case ParameterAlgorithm.SHRINKAGE_ESTIMATOR:
             from bayesian_learning.categorical_model.parameter_learning.shrinkage import learn_shrinkage_parameters
             return learn_shrinkage_parameters(location, structure)
+    # Default to MLE, but add a tiny smoothing prior to prevent DatabaseError on unseen configurations
+    learner.useSmoothingPrior(1e-4)
     return learner.learnParameters(structure.dag())

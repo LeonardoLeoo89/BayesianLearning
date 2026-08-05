@@ -97,6 +97,8 @@ def benchmark_categorical(filepath: str) -> Dict[str, Dict[str, Any]]:
                     
             status = "Success"
         except Exception as e:
+            import traceback
+            traceback.print_exc()
             edges = 0
             status = f"Failed: {str(e)}"
             
