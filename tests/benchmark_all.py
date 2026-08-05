@@ -83,19 +83,17 @@ def benchmark_categorical(filepath: str) -> Dict[str, Dict[str, Any]]:
             
             if isinstance(output, gum.BayesNet):
                 edges = output.sizeArcs()
-                # Save graph/parameters
-                out_bif = os.path.join(OUTPUT_DIR, f"{os.path.basename(filepath)}_{name.replace(' ', '_')}.bif")
-                gum.saveBN(output, out_bif)
+                out_prefix = os.path.join(OUTPUT_DIR, f"{os.path.basename(filepath)}_{name.replace(' ', '_').replace('(', '').replace(')', '')}")
+                export_categorical_results(output, out_prefix)
             else:
                 # Tetrad Java Graph (we just log it worked)
                 edges = len(output.getEdges())
-                # Note: We can't easily save Tetrad Java graphs natively in pyagrum format, 
-                # but we'll print its string representation.
                 out_txt = os.path.join(OUTPUT_DIR, f"{os.path.basename(filepath)}_{name.replace(' ', '_')}.txt")
                 with open(out_txt, "w") as f:
                     f.write(str(output))
                     
             status = "Success"
+            
         except Exception as e:
             import traceback
             traceback.print_exc()
@@ -126,16 +124,15 @@ def benchmark_sem(filepath: str) -> Dict[str, Dict[str, Any]]:
         print(f"  Running {name}...")
         start_time = time.perf_counter()
         
-        output = None
         try:
             sem_result = learn_structure(filepath, algo_enum, **kwargs)
             adjacency_matrix = sem_result.adjacency_matrix
             edges = int(np.sum(adjacency_matrix != 0))
             status = "Success"
             
-            # Save the adjacency matrix
-            out_csv = os.path.join(OUTPUT_DIR, f"{os.path.basename(filepath)}_{name}_adjacency.csv")
-            pd.DataFrame(adjacency_matrix).to_csv(out_csv, index=False)
+            # Export the results
+            out_prefix = os.path.join(OUTPUT_DIR, f"{os.path.basename(filepath)}_{name}")
+            export_sem_results(sem_result, out_prefix)
             
         except Exception as e:
             edges = 0

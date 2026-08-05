@@ -13,6 +13,7 @@ from bayesian_learning.SEM_model.learn_sem import (
     SEMAlgorithm as SEMAlgo
 )
 from bayesian_learning.SEM_model.result import GranDAGResult
+from bayesian_learning.utils.export import export_categorical_results, export_sem_results
 import pyagrum as gum
 import numpy as np
 
@@ -50,7 +51,7 @@ def main():
         "--output",
         type=str,
         default=None,
-        help="Optional path to save the output graph (e.g., .bif for categorical, .csv for SEM adjacency matrix)"
+        help="Optional path prefix to save the output files (e.g., passing 'my_net' will create 'my_net.bif', 'my_net_graph.png', 'my_net_cpts.txt')"
     )
     
     # Predict Distribution (GraN-DAG only)
@@ -69,7 +70,7 @@ def main():
     print(f"Dataset: {args.csv_path}")
     print(f"Paradigm: {args.type.upper()}")
     if args.output:
-        print(f"Output: {args.output}")
+        print(f"Output Prefix: {args.output}")
     
     start_time = time.perf_counter()
     
@@ -103,8 +104,10 @@ def main():
                 print(f"Nodes: {bn.size()}")
                 print(f"Arcs (Edges): {bn.sizeArcs()}")
                 if args.output:
-                    gum.saveBN(bn, args.output)
-                    print(f"Saved BayesNet to: {args.output}")
+                    paths = export_categorical_results(bn, args.output)
+                    print(f"Saved Network to: {paths[0]}")
+                    print(f"Saved Graph Plot to: {paths[1]}")
+                    print(f"Saved CPTs to: {paths[2]}")
             else:
                 # Fallback if something else is returned
                 print(f"Result object type: {type(bn)}")
@@ -150,8 +153,9 @@ def main():
             print(f"Arcs (Edges): {edges}")
             
             if args.output:
-                pd.DataFrame(adj).to_csv(args.output, index=False)
-                print(f"Saved SEM adjacency matrix to: {args.output}")
+                paths = export_sem_results(result, args.output)
+                print(f"Saved Adjacency Matrix to: {paths[0]}")
+                print(f"Saved Graph Plot to: {paths[1]}")
                 
             if args.predict_dist and isinstance(result, GranDAGResult):
                 print("\nPredicting distributions with GraN-DAG...")
@@ -161,7 +165,7 @@ def main():
                 print(f"Predicted distributions for {len(distributions)} variables successfully!")
                 if args.output:
                     # Optional: save the distributions using pickle if requested
-                    dist_out = args.output + ".dist.pkl"
+                    dist_out = args.output + "_distributions.pkl"
                     with open(dist_out, "wb") as f:
                         pickle.dump(distributions, f)
                     print(f"Saved PyTorch distributions to: {dist_out}")
