@@ -34,6 +34,9 @@ dependencies = [
 [project.urls]
 "Homepage" = "https://github.com/LeonardoLeoo89/BayesianLearning"
 
+[project.scripts]
+bayesian-learn = "bayesian_learning.cli:main"
+
 [tool.setuptools.packages.find]
 where = ["src"]
 include = ["bayesian_learning*"]
