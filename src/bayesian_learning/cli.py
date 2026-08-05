@@ -21,7 +21,6 @@ def main():
     parser = argparse.ArgumentParser(description="Bayesian Learning CLI")
     parser.add_argument("csv_path", type=str, help="Path to the dataset CSV file")
 
-    # Paradigm selection
     parser.add_argument(
         "--type",
         type=str,
@@ -30,7 +29,6 @@ def main():
         help="Type of learning paradigm to use"
     )
 
-    # Structure algorithm
     parser.add_argument(
         "--structure-algo",
         type=str,
@@ -38,7 +36,6 @@ def main():
         help="Structural learning algorithm (hill_climbing, genetic_k2, pc, fci, rfci, structural_em, dagma, dag_gnn, gran_dag)"
     )
 
-    # Parameter algorithm (categorical only)
     parser.add_argument(
         "--parameter-algo",
         type=str,
@@ -139,7 +136,7 @@ def main():
             return
 
         print(f"Algorithms: Structure={sem_algo.name}")
-        print("Learning... (please wait, SEM models can take a long time)")
+        print("Learning... (please wait)")
 
         try:
             result = learn_sem_structure(args.csv_path, sem_algo)
