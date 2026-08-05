@@ -23,12 +23,15 @@ def learn(location: str, structure_algo: StructureAlgorithm,
     import pyagrum as gum
     if structure_algo == StructureAlgorithm.STRUCTURAL_EM and parameter_algo != ParameterAlgorithm.EM:
         raise InvalidBranchException("STRUCTURAL_EM must be used with ParameterAlgorithm.EM")
+    
     match structure_algo:
         case StructureAlgorithm.HILL_CLIMBING:
-            return learn_agrum(location, structure_algo, parameter_algo)
+            dag = learn_agrum_structure(location, structure_algo)
+            return learn_parameters(location, dag, parameter_algo)
         case StructureAlgorithm.GENETIC_K2:
             from bayesian_learning.categorical_model.genetic_K2.genetic_K2 import genetic_k2
-            return learn_parameters(location, genetic_k2(location), parameter_algo)
+            dag = genetic_k2(location)
+            return learn_parameters(location, dag, parameter_algo)
         case StructureAlgorithm.STRUCTURAL_EM:
             from bayesian_learning.categorical_model.structural_em.structural_em import structural_em
             import pandas as pd
@@ -40,10 +43,11 @@ def learn(location: str, structure_algo: StructureAlgorithm,
         case StructureAlgorithm.PC | StructureAlgorithm.FCI | StructureAlgorithm.RFCI:
             from bayesian_learning.categorical_model.categorical_translator.tetrad2agrum import translate
             tetrad_dag = learn_tetrad(location, structure_algo)
-            return learn_parameters(location, translate(tetrad_dag), parameter_algo)
+            # tetrad2agrum returns an unparameterized BayesNet. We extract its DAG for modularity.
+            dag = translate(tetrad_dag).dag()
+            return learn_parameters(location, dag, parameter_algo)
 
-def learn_agrum(location: str, structure_algo: StructureAlgorithm,
-                parameter_algo: ParameterAlgorithm) -> Any:
+def learn_agrum_structure(location: str, structure_algo: StructureAlgorithm) -> Any:
     import pyagrum as gum
     learner: gum.BNLearner = gum.BNLearner(location)
     match structure_algo:
@@ -51,16 +55,7 @@ def learn_agrum(location: str, structure_algo: StructureAlgorithm,
             learner.useGreedyHillClimbing()
         case _:
             raise InvalidBranchException(f"Unexpected algorithm \"{structure_algo}\" for pyAgrum learning")
-    match parameter_algo:
-        case ParameterAlgorithm.EM:
-            learner.useEM(1e-3)
-            learner.useSmoothingPrior(1.0)
-        case ParameterAlgorithm.BAYESIAN_DIRICHLET_PRIORS:
-            learner.useDirichletPrior()
-        case ParameterAlgorithm.SHRINKAGE_ESTIMATOR:
-            from bayesian_learning.categorical_model.parameter_learning.shrinkage import learn_shrinkage_parameters
-            return learn_shrinkage_parameters(location, learner.learnBN())
-    return learner.learnBN()
+    return learner.learnDAG()
 
 def learn_tetrad(location: str, structure_algo: StructureAlgorithm,
                  alpha: float = 0.05) -> Any:
@@ -76,21 +71,29 @@ def learn_tetrad(location: str, structure_algo: StructureAlgorithm,
             search.run_fci()
         case StructureAlgorithm.RFCI:
             search.run_rfci()
-    return search.get_dag_java()
+    return search.get_java()
 
-def learn_parameters(location: str, structure: Any,
+def learn_parameters(location: str, dag: Any,
                      parameter_algo: ParameterAlgorithm) -> Any:
     import pyagrum as gum
     learner: gum.BNLearner = gum.BNLearner(location)
+    
+    if parameter_algo == ParameterAlgorithm.SHRINKAGE_ESTIMATOR:
+        # Shrinkage needs a baseline parameterized BayesNet to extract labels and states.
+        # We initialize it with MLE and a tiny smoothing prior to prevent DatabaseError.
+        learner.useSmoothingPrior(1e-4)
+        bn = learner.learnParameters(dag)
+        from bayesian_learning.categorical_model.parameter_learning.shrinkage import learn_shrinkage_parameters
+        return learn_shrinkage_parameters(location, bn)
+
     match parameter_algo:
         case ParameterAlgorithm.EM:
             learner.useEM(1e-3)
             learner.useSmoothingPrior(1.0)
         case ParameterAlgorithm.BAYESIAN_DIRICHLET_PRIORS:
             learner.useDirichletPrior()
-        case ParameterAlgorithm.SHRINKAGE_ESTIMATOR:
-            from bayesian_learning.categorical_model.parameter_learning.shrinkage import learn_shrinkage_parameters
-            return learn_shrinkage_parameters(location, structure)
-    # Default to MLE, but add a tiny smoothing prior to prevent DatabaseError on unseen configurations
-    learner.useSmoothingPrior(1e-4)
-    return learner.learnParameters(structure.dag())
+        case ParameterAlgorithm.MLE:
+            # Add a tiny smoothing prior to prevent DatabaseError on unseen configurations
+            learner.useSmoothingPrior(1e-4)
+            
+    return learner.learnParameters(dag)

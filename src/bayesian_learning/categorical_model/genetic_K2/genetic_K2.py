@@ -77,18 +77,17 @@ def check_fitness_stagnation( avg_fitness_history: list[float], patience: int = 
 
 
 def k2_apply( location: str, attributes: Sequence[Any],
-    max_degree: int = 4) -> gum.BayesNet:
+    max_degree: int = 4) -> gum.DAG:
     import pyagrum as gum
     learner: gum.BNLearner = gum.BNLearner(location)
-    learner.useSmoothingPrior(1.0)
     node_ids: list[int] = [
         learner.idFromName(a) if isinstance(a, str) else a for a in attributes
     ]
     learner.useK2(node_ids)
     if max_degree is not None:
         learner.setMaxIndegree(max_degree)
-    bn: gum.BayesNet = learner.learnBN()
-    return bn
+    dag: gum.DAG = learner.learnDAG()
+    return dag
 
 
 import pyagrum as gum
@@ -96,7 +95,7 @@ def genetic_k2( location: str, pop_size: int = 50, ngen: int = 50,
                 cxpb: float = 0.8, mutpb: float = 0.2, tournsize: int = 3,
                 max_degree: int = 4, alpha: float = 0.95,
                 beta: float = 1.0, patience: int = 10,
-                seed: int | None = None) -> gum.BayesNet:
+                seed: int | None = None) -> gum.DAG:
     import deap.base as base
     import deap.creator as _creator
     import deap.tools as tools
@@ -131,11 +130,10 @@ def genetic_k2( location: str, pop_size: int = 50, ngen: int = 50,
 
         node_ids: list[int] = list(key)
         learner_inst: gum.BNLearner = gum.BNLearner(location)
-        learner_inst.useSmoothingPrior(1.0)
         learner_inst.useK2(node_ids)
         learner_inst.setMaxIndegree(max_degree)
-        bn: gum.BayesNet = learner_inst.learnBN()
-        nodes_list: list[Any] = list(cast(Iterable[Any], bn.nodes()))
+        dag: gum.DAG = learner_inst.learnDAG()
+        nodes_list: list[Any] = list(cast(Iterable[Any], dag.nodes()))
         score: float = sum(learner_inst.score(node) for node in nodes_list)
         fitness_cache[key] = score
         return (score,)
@@ -194,7 +192,7 @@ def genetic_k2( location: str, pop_size: int = 50, ngen: int = 50,
             break
 
     best_individual: Sequence[Any] = hof[0]
-    best_bn: gum.BayesNet = k2_apply(
+    best_dag: gum.DAG = k2_apply(
         location, best_individual, max_degree
     )
-    return best_bn
+    return best_dag

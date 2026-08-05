@@ -7,7 +7,7 @@ import pyagrum as gum
 from typing import Dict, Any, List
 
 from bayesian_learning.categorical_model.learn_categorical import (
-    StructureAlgorithm, ParameterAlgorithm, learn, learn_agrum, learn_tetrad
+    StructureAlgorithm, ParameterAlgorithm, learn
 )
 from bayesian_learning.SEM_model.learn_sem import (
     SEMAlgorithm, learn_structure
@@ -59,11 +59,11 @@ def benchmark_categorical(filepath: str) -> Dict[str, Dict[str, Any]]:
     results = {}
     
     algorithms = {
-        "Hill Climbing (Agrum)": (learn_agrum, [StructureAlgorithm.HILL_CLIMBING, ParameterAlgorithm.MLE]),
+        "Hill Climbing (Agrum)": (learn, [StructureAlgorithm.HILL_CLIMBING, ParameterAlgorithm.MLE]),
         "Genetic K2": (learn, [StructureAlgorithm.GENETIC_K2, ParameterAlgorithm.MLE]),
-        "PC (Tetrad)": (learn_tetrad, [StructureAlgorithm.PC]),
-        "FCI (Tetrad)": (learn_tetrad, [StructureAlgorithm.FCI]),
-        "RFCI (Tetrad)": (learn_tetrad, [StructureAlgorithm.RFCI]),
+        "PC (Tetrad)": (learn, [StructureAlgorithm.PC, ParameterAlgorithm.MLE]),
+        "FCI (Tetrad)": (learn, [StructureAlgorithm.FCI, ParameterAlgorithm.MLE]),
+        "RFCI (Tetrad)": (learn, [StructureAlgorithm.RFCI, ParameterAlgorithm.MLE]),
         "Structural EM": (learn, [StructureAlgorithm.STRUCTURAL_EM, ParameterAlgorithm.EM])
     }
     
