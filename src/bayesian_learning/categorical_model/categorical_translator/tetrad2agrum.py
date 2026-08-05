@@ -21,7 +21,8 @@ def translate(tetrad: Any) -> Any:
         name = str(node.getName())
         node_map[node] = out.add(gum.LabelizedVariable(name, "", [str(c) for c in node.getCategories()]))
 
-    edges_to_add = []
+    dag_copy: dict[int, set[int]] = {n : set() for n in node_map.values()}
+    ambiguous: set[tuple[int, int]] = set()
     for edge in tetrad.getEdges():
         node1 = edge.getNode1()
         node2 = edge.getNode2()
@@ -31,36 +32,40 @@ def translate(tetrad: Any) -> Any:
         u = node_map[node1]
         v = node_map[node2]
         
-        # Priority 0: strict directed (TAIL -> ARROW)
-        # Priority 1: partially directed (CIRCLE -> ARROW)
-        # Priority 2: undirected or bidirected (CIRCLE -> CIRCLE, ARROW -> ARROW)
-        # For priority 1 and 2, direction is ambiguous so we allow trying the reverse direction 
-        # if the preferred direction creates a cycle.
-        
-        if ep1_name == "TAIL" and ep2_name == "ARROW":
-            edges_to_add.append((u, v, 0, False))
-        elif ep2_name == "TAIL" and ep1_name == "ARROW":
-            edges_to_add.append((v, u, 0, False))
-        elif ep1_name == "CIRCLE" and ep2_name == "ARROW":
-            edges_to_add.append((u, v, 1, True))
-        elif ep2_name == "CIRCLE" and ep1_name == "ARROW":
-            edges_to_add.append((v, u, 1, True))
-        else:
-            edges_to_add.append((u, v, 2, True))
-            
-    # Sort by priority (0 is strict directed, 2 is arbitrary)
-    edges_to_add.sort(key=lambda x: x[2])
-    
-    import pyagrum as gum
-    
-    for u, v, _, can_reverse in edges_to_add:
-        try:
+        if ep1_name in {"TAIL", "CIRCLE"} and ep2_name == "ARROW":
             out.addArc(u, v)
-        except Exception:
-            if can_reverse:
-                try:
-                    out.addArc(v, u)
-                except Exception:
-                    pass
+            dag_copy[u].add(v)
+        elif ep2_name in {"TAIL", "CIRCLE"} and ep1_name == "ARROW":
+            out.addArc(v, u)
+            dag_copy[v].add(u)
+        else:
+            ambiguous.add((u, v))
+
+    last_place: int = 0
+    topologic_sort: dict[int, int] = dict()
+    counters: dict[int, int] = {n : 0 for n in node_map.values()}
+    zeroes: set[int] = set()
+    current: int
+    for tail in dag_copy.keys():
+        for head in dag_copy[tail]:
+            counters[head] += 1
+    for count in counters.keys():
+        if counters[count] == 0: zeroes.add(count)
+    while zeroes:
+        current = zeroes.pop()
+        topologic_sort[current] = last_place
+        last_place += 1
+        for node in dag_copy[current]:
+            counters[node] -= 1
+            if counters[node] == 0: zeroes.add(node)
+
+    if len(topologic_sort) != len(dag_copy):
+        raise BrokenInvariantException(
+            "The directed portion of the graph contains a cycle."
+        )
+
+    for u, v in ambiguous:
+        if topologic_sort[u] < topologic_sort[v]: out.addArc(u, v)
+        else: out.addArc(v, u)
 
     return out
