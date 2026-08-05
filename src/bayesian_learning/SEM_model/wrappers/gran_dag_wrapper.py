@@ -22,7 +22,12 @@ class GraNDAGWrapper(SEMWrapper):
         import torch
         
         n_samples, n_vars = data.shape
-        
+        # Ensure GPU is enabled if available, unless explicitly disabled by user
+        if 'gpu' not in self.kwargs:
+            self.kwargs['gpu'] = torch.cuda.is_available()
+            
+        print(f"GraN-DAG Wrapper: GPU enabled = {self.kwargs['gpu']}")
+
         # Instantiate the native OOP trainer
         trainer = GraNDAGTrainer(**self.kwargs)
         

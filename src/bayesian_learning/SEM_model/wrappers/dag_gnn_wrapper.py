@@ -15,6 +15,13 @@ class DAGGNNWrapper(SEMWrapper):
 
     def learn(self, data: pd.DataFrame) -> SEMResult:
         """Learns the DAG structure using DAG-GNN."""
+        import torch
+        
+        # Ensure CUDA is enabled if available, unless explicitly disabled by user
+        if 'cuda' not in self.kwargs:
+            self.kwargs['cuda'] = torch.cuda.is_available()
+            
+        print(f"DAG-GNN Wrapper: CUDA enabled = {self.kwargs['cuda']}")
 
         trainer = DAGGNNTrainer(**self.kwargs)
         W_est = trainer.fit(data.values)

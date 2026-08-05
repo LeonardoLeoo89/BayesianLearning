@@ -505,7 +505,7 @@ wheels = [
 [[package]]
 name = "gran-dag"
 version = "0.1.0"
-source = { git = "https://github.com/LeonardoLeoo89/GraN-DAG.git?rev=master#c7a99a81ad60b6d24386437304f512f396002862" }
+source = { git = "https://github.com/LeonardoLeoo89/GraN-DAG.git?rev=master#2ddb0b2026edb03eaa9acabb92e50cf9e5081c0c" }
 
 [[package]]
 name = "igraph"

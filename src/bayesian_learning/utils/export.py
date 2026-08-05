@@ -32,14 +32,11 @@ def export_categorical_results(bn: gum.BayesNet, output_prefix: str):
     bif_path = f"{output_prefix}.bif"
     gum.saveBN(bn, bif_path)
 
-    G = nx.DiGraph()
-    for node_id in bn.nodes():
-        G.add_node(bn.variable(node_id).name())
-    for source, target in bn.arcs():
-        G.add_edge(bn.variable(source).name(), bn.variable(target).name())
-
+    import pyagrum.lib.image as gumimage
+    dot_obj = gumimage.BN2dot(bn)
+    dot_obj.set_dpi("300")
     plot_path = f"{output_prefix}_graph.png"
-    plot_and_save_networkx(G, plot_path)
+    dot_obj.write_png(plot_path)
 
     cpt_path = f"{output_prefix}_cpts.txt"
     with open(cpt_path, "w") as f:

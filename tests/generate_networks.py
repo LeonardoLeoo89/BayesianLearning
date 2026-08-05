@@ -109,8 +109,8 @@ def create_train_delay_network() -> gum.BayesNet:
         "InfraFailure": ["False", "True"],
         "SpeedRestriction": ["False", "True"],
         "HubCongestion": ["False", "True"],
-        "DepartureDelay": ["None", "Minor", "Major"],
-        "ArrivalDelay": ["None", "Minor", "Major"],
+        "DepartureDelay": ["NoDelay", "Minor", "Major"],
+        "ArrivalDelay": ["NoDelay", "Minor", "Major"],
         "CompensationClaim": ["False", "True"]
     }
     

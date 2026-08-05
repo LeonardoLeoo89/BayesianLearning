@@ -12,6 +12,7 @@ from bayesian_learning.categorical_model.learn_categorical import (
 from bayesian_learning.SEM_model.learn_sem import (
     SEMAlgorithm, learn_structure
 )
+from bayesian_learning.utils.export import export_categorical_results, export_sem_results
 
 # Paths to datasets
 CAT_DATA_DIR = "tests/synthetic_data"
