@@ -3,6 +3,19 @@ import pyagrum as gum
 import pandas as pd
 
 def generate_ess_dataset(bn: gum.BayesNet, df: pd.DataFrame) -> pd.DataFrame:
+    """ESS dataset generator.
+
+        Generates a dataset weighted by the
+        expected sufficient statistics calculated from a
+        given dataset and an already defined bayesian network.
+
+        Args:
+            bn: A Bayesian network.
+            df: A dataframe.
+
+        Returns:
+            The ESS-based dataframe.
+        """
     ie: gum.LazyPropagation = gum.LazyPropagation(bn)
     completed_rows: List[Dict[str, Any]] = []
     variables: tuple[str, ...] = bn.names() # type: ignore
@@ -52,6 +65,24 @@ def generate_ess_dataset(bn: gum.BayesNet, df: pd.DataFrame) -> pd.DataFrame:
 def structural_em(location: str, initial_bn: gum.BayesNet,
                   max_iters: int = 100,
                   epsilon: float | int = 1e-3) -> gum.BayesNet:
+    """Structural EM algorithm.
+
+        Implementation of the EM concept for bayesian network learning,
+        capable of handling missing data.
+        The algorithm alternates between an Expectation phase (ESS computation)
+        and a Maximization phase (network learning)
+
+        Args:
+            location: The path of the dataset (csv).
+            initial_bn: Starting bayesian network.
+            max_iters: The number of maximum iterations.
+                Defaults to 100.
+            epsilon: The epsilon parameter for parameter EM.
+                Defaults to 1e-3.
+
+        Returns:
+            The learned bayesian network.
+        """
     current: gum.BayesNet = initial_bn
     df_missing: pd.DataFrame = pd.read_csv(location)
     t: int = 0

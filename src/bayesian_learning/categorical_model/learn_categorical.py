@@ -1,5 +1,6 @@
 from enum import Enum, auto
 from typing import Any
+import pyagrum as gum
 
 class InvalidBranchException(Exception):
     pass
@@ -19,8 +20,7 @@ class ParameterAlgorithm(Enum):
     SHRINKAGE_ESTIMATOR = auto()
 
 def learn(location: str, structure_algo: StructureAlgorithm,
-    parameter_algo: ParameterAlgorithm = ParameterAlgorithm.MLE) -> Any:
-    import pyagrum as gum
+    parameter_algo: ParameterAlgorithm = ParameterAlgorithm.MLE) -> gum.BayesNet:
     if structure_algo == StructureAlgorithm.STRUCTURAL_EM and parameter_algo != ParameterAlgorithm.EM:
         raise InvalidBranchException("STRUCTURAL_EM must be used with ParameterAlgorithm.EM")
 
@@ -42,10 +42,10 @@ def learn(location: str, structure_algo: StructureAlgorithm,
         case StructureAlgorithm.PC | StructureAlgorithm.FCI | StructureAlgorithm.RFCI:
             from bayesian_learning.categorical_model.categorical_translator.tetrad2agrum import translate
             tetrad_dag = learn_tetrad(location, structure_algo)
-            dag = translate(tetrad_dag).dag()
+            dag = translate(tetrad_dag)
     return learn_parameters(location, dag, parameter_algo)
 
-def learn_agrum_structure(location: str, structure_algo: StructureAlgorithm) -> Any:
+def learn_agrum_structure(location: str, structure_algo: StructureAlgorithm) -> gum.DAG:
     import pyagrum as gum
     learner: gum.BNLearner = gum.BNLearner(location)
     match structure_algo:
@@ -71,9 +71,8 @@ def learn_tetrad(location: str, structure_algo: StructureAlgorithm,
             search.run_rfci()
     return search.get_java()
 
-def learn_parameters(location: str, dag: Any,
-                     parameter_algo: ParameterAlgorithm) -> Any:
-    import pyagrum as gum
+def learn_parameters(location: str, dag: gum.DAG,
+                     parameter_algo: ParameterAlgorithm) -> gum.BayesNet:
     learner: gum.BNLearner = gum.BNLearner(location)
 
     match parameter_algo:
@@ -86,8 +85,6 @@ def learn_parameters(location: str, dag: Any,
             learner.useSmoothingPrior(1e-4)
         case ParameterAlgorithm.SHRINKAGE_ESTIMATOR:
             learner.useSmoothingPrior(1e-4)
-            bn = learner.learnParameters(dag)
             from bayesian_learning.categorical_model.parameter_learning.shrinkage import learn_shrinkage_parameters
-            return learn_shrinkage_parameters(location, bn)
-            
+            return learn_shrinkage_parameters(location, learner.learnParameters(dag))
     return learner.learnParameters(dag)
