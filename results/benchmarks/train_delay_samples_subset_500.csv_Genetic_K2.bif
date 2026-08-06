@@ -1,0 +1,106 @@
+network "unnamedBN" {
+// written by aGrUM 2.3.2
+}
+
+variable TimeOfDay {
+   type discrete[4] {EveningRush, Midday, MorningRush, Night};
+}
+
+variable PassengerVolume {
+   type discrete[3] {High, Low, Normal};
+}
+
+variable HubCongestion {
+   type discrete[2] {False, True};
+}
+
+variable Season {
+   type discrete[4] {Autumn, Spring, Summer, Winter};
+}
+
+variable Weather {
+   type discrete[4] {Clear, Rain, Snow, Storm};
+}
+
+variable TrackIncident {
+   type discrete[2] {False, True};
+}
+
+variable InfraFailure {
+   type discrete[2] {False, True};
+}
+
+variable DepartureDelay {
+   type discrete[3] {Major, Minor, NoDelay};
+}
+
+variable SpeedRestriction {
+   type discrete[2] {False, True};
+}
+
+variable ArrivalDelay {
+   type discrete[3] {Major, Minor, NoDelay};
+}
+
+variable CompensationClaim {
+   type discrete[2] {False, True};
+}
+
+probability (TimeOfDay | HubCongestion) {
+   (False) 0.16838499191066406 0.0481102431474321 0.3883159610777167 0.39518880386418714;
+   (True) 0.40669826469231635 0.10526343490251693 0.28708126874398326 0.20095703166118342;
+}
+probability (PassengerVolume | TimeOfDay, HubCongestion) {
+   (EveningRush, False) 0.020410079121964558 0.6530592669840797 0.32653065389395575;
+   (Midday, False) 0.8571316328935809 0.07143418355320957 0.07143418355320957;
+   (MorningRush, False) 0.6548664030095496 0.3451327120370477 8.849534027785767e-07;
+   (Night, False) 0.7826075236325472 0.2000003478251796 0.017392128542273372;
+   (EveningRush, True) 0.011765840826444142 0.24705912802660698 0.7411750311469489;
+   (Midday, True) 0.04545847102084972 0.09091239664913661 0.8636291323300137;
+   (MorningRush, True) 0.21666724999708334 0.7666645000108333 0.016668249992083373;
+   (Night, True) 0.30952397959062194 0.5952362245031583 0.0952397959062197;
+}
+probability (HubCongestion) {
+   table 0.5819999672000131 0.41800003279998693;
+}
+probability (Season | Weather) {
+   (Clear) 0.5263150623287833 0.309210370499025 0.03947423822568887 0.12500032894650276;
+   (Rain) 0.5819661247012305 0.30327851384093824 0.008197514106511126 0.10655784735132016;
+   (Snow) 0.178344131607308 0.6114640472253574 0.08917238427418019 0.1210194368931544;
+   (Storm) 0.2463768325980719 0.23188416299035947 0.21739149338264704 0.30434751102892155;
+}
+probability (Weather) {
+   table 0.30399995680003455 0.24400000479999617 0.31399994880004095 0.13800008959992832;
+}
+probability (TrackIncident | SpeedRestriction) {
+   (False) 0.39603980982215875 0.6039601901778412;
+   (True) 0.7869672747031203 0.21303272529687955;
+}
+probability (InfraFailure | DepartureDelay, HubCongestion) {
+   (Major, False) 0.49397591813031777 0.5060240818696823;
+   (Minor, False) 0.7357139489800729 0.26428605101992714;
+   (NoDelay, False) 0.029413148784856517 0.9705868512151434;
+   (Major, True) 0.2702708911597536 0.7297291088402463;
+   (Minor, True) 0.22368493767121664 0.7763150623287833;
+   (NoDelay, True) 0.7796600689489189 0.22033993105108118;
+}
+probability (DepartureDelay | ArrivalDelay) {
+   (Major) 0.1467895042490709 0.7706409982357847 0.08256949751514446;
+   (Minor) 0.5176988703112341 0.3274336361500405 0.1548674935387254;
+   (NoDelay) 0.1454548870517205 0.3515151184573604 0.5030299944909191;
+}
+probability (SpeedRestriction | Weather) {
+   (Clear) 0.3750001644734678 0.6249998355265322;
+   (Rain) 0.08196789841328128 0.9180321015867187;
+   (Snow) 0.10191133514479599 0.898088664855204;
+   (Storm) 0.2608702583470772 0.7391297416529227;
+}
+probability (ArrivalDelay) {
+   table 0.21800006919995846 0.4519999288000427 0.3300000019999988;
+}
+probability (CompensationClaim | ArrivalDelay) {
+   (Major) 0.5504586230117009 0.4495413769882991;
+   (Minor) 0.5353981987626559 0.464601801237344;
+   (NoDelay) 0.9272722093670189 0.07272779063298104;
+}
+

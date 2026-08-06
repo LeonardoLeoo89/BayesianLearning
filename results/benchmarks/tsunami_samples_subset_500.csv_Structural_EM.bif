@@ -1,0 +1,36 @@
+network "unnamedBN" {
+// written by aGrUM 2.3.2
+}
+
+variable CoastalLandslide {
+   type discrete[2] {False, True};
+}
+
+variable SubmarineEarthquake {
+   type discrete[2] {False, True};
+}
+
+variable Tsunami {
+   type discrete[2] {False, True};
+}
+
+variable TsunamiWarning {
+   type discrete[2] {Active, Inactive};
+}
+
+probability (CoastalLandslide | TsunamiWarning) {
+   (Active) 0.6574023431764269 0.3425976568235731;
+   (Inactive) 0.9829625238679311 0.01703747613206885;
+}
+probability (SubmarineEarthquake | TsunamiWarning) {
+   (Active) 0.8115747271582541 0.18842527284174598;
+   (Inactive) 0.9969927254852912 0.0030072745147087564;
+}
+probability (Tsunami | TsunamiWarning) {
+   (Active) 0.5443711492842414 0.45562885071575865;
+   (Inactive) 0.9978841593466102 0.0021158406533898343;
+}
+probability (TsunamiWarning) {
+   table 0.0372484045269332 0.9627515954730668;
+}
+

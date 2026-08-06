@@ -1,0 +1,28 @@
+Category,Dataset,Algorithm,time,edges,status
+Categorical,allergy_samples.csv,Hill Climbing (Agrum),0.007254585998452967,8,Success
+Categorical,allergy_samples.csv,Genetic K2,0.4296669390005263,10,Success
+Categorical,allergy_samples.csv,PC (Tetrad),0.6575442290013598,7,Success
+Categorical,allergy_samples.csv,FCI (Tetrad),0.04489277900029265,7,Success
+Categorical,allergy_samples.csv,RFCI (Tetrad),0.03047263699954783,7,Success
+Categorical,allergy_samples.csv,Structural EM,31.05760783599908,12,Success
+Categorical,train_delay_samples.csv,Hill Climbing (Agrum),0.002852114001143491,12,Success
+Categorical,train_delay_samples.csv,Genetic K2,0.5256207519996678,11,Success
+Categorical,train_delay_samples.csv,PC (Tetrad),0.025938114000382484,12,Success
+Categorical,train_delay_samples.csv,FCI (Tetrad),0.02922837299956882,12,Success
+Categorical,train_delay_samples.csv,RFCI (Tetrad),0.016865046998645994,12,Success
+Categorical,train_delay_samples.csv,Structural EM,0.5646265249997668,17,Success
+Categorical,tsunami_samples.csv,Hill Climbing (Agrum),0.0011136749999423046,4,Success
+Categorical,tsunami_samples.csv,Genetic K2,0.013853931000994635,4,Success
+Categorical,tsunami_samples.csv,PC (Tetrad),0.00823642000068503,4,Success
+Categorical,tsunami_samples.csv,FCI (Tetrad),0.006359958000757615,4,Success
+Categorical,tsunami_samples.csv,RFCI (Tetrad),0.007501987998693949,4,Success
+Categorical,tsunami_samples.csv,Structural EM,0.2809389199992438,3,Success
+SEM,allergy_sem.csv,DAGMA,113.827746064,8,Success
+SEM,allergy_sem.csv,DAG_GNN,29.691296443,56,Success
+SEM,allergy_sem.csv,GraN-DAG,343.77596679399994,15,Success
+SEM,train_delay_sem.csv,DAGMA,122.717961769,16,Success
+SEM,train_delay_sem.csv,DAG_GNN,29.327435046999994,110,Success
+SEM,train_delay_sem.csv,GraN-DAG,2143.971019527,50,Success
+SEM,tsunami_sem.csv,DAGMA,92.21756488599976,5,Success
+SEM,tsunami_sem.csv,DAG_GNN,26.642461727999944,12,Success
+SEM,tsunami_sem.csv,GraN-DAG,67.98993664400041,6,Success

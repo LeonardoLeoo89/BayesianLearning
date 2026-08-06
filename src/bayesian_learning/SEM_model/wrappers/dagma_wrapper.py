@@ -5,7 +5,7 @@ from ..result import SEMResult
 from .base import SEMWrapper
 
 class DagmaWrapper(SEMWrapper):
-    """Wrapper for the pip-installed dagma library."""
+    """Wrapper for the dagma library."""
 
     def __init__(self, model_type: str = 'linear', **kwargs):
         """
