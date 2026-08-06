@@ -23,16 +23,16 @@ def draw_network_with_probs(bn: gum.BayesNet, filename: str):
     print(f"Saved {filename}")
 
 if __name__ == "__main__":
-    os.makedirs("tests/probability_plots", exist_ok=True)
+    os.makedirs("results/probability_plots", exist_ok=True)
     
     # Load networks
-    tsunami_bn = gum.loadBN("generated_bns/tsunami.bif")
-    allergy_bn = gum.loadBN("generated_bns/allergy.bif")
-    train_bn = gum.loadBN("generated_bns/train_delay.bif")
+    tsunami_bn = gum.loadBN("data/ground_truth/tsunami.bif")
+    allergy_bn = gum.loadBN("data/ground_truth/allergy.bif")
+    train_bn = gum.loadBN("data/ground_truth/train_delay.bif")
     
     print("Generating network graphs with inline probabilities...")
-    draw_network_with_probs(tsunami_bn, "tests/probability_plots/tsunami_graph_probs.png")
-    draw_network_with_probs(allergy_bn, "tests/probability_plots/allergy_graph_probs.png")
-    draw_network_with_probs(train_bn, "tests/probability_plots/train_delay_graph_probs.png")
+    draw_network_with_probs(tsunami_bn, "results/probability_plots/tsunami_graph_probs.png")
+    draw_network_with_probs(allergy_bn, "results/probability_plots/allergy_graph_probs.png")
+    draw_network_with_probs(train_bn, "results/probability_plots/train_delay_graph_probs.png")
     
     print("\nSuccessfully generated plots!")

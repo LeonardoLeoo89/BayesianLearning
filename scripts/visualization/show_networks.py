@@ -40,7 +40,7 @@ def draw_network(bn: gum.BayesNet, filename: str):
     print(f"Saved {filename}")
 
 if __name__ == "__main__":
-    os.makedirs("generated_bns", exist_ok=True)
+    os.makedirs("data/ground_truth", exist_ok=True)
     
     print("Generating networks...")
     tsunami_bn = create_tsunami_network()
@@ -48,9 +48,9 @@ if __name__ == "__main__":
     train_bn = create_train_delay_network()
     
     print("Plotting networks...")
-    draw_network(tsunami_bn, "generated_bns/tsunami.png")
-    draw_network(allergy_bn, "generated_bns/allergy.png")
-    draw_network(train_bn, "generated_bns/train_delay.png")
+    draw_network(tsunami_bn, "data/ground_truth/tsunami.png")
+    draw_network(allergy_bn, "data/ground_truth/allergy.png")
+    draw_network(train_bn, "data/ground_truth/train_delay.png")
     
     print("\nSuccessfully generated plots!")
-    print("You can view them by opening the PNG files in the 'generated_bns' directory.")
+    print("You can view them by opening the PNG files in the 'data/ground_truth' directory.")

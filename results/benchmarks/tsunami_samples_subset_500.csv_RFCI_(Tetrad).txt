@@ -1,0 +1,9 @@
+Graph Nodes:
+CoastalLandslide;SubmarineEarthquake;Tsunami;TsunamiWarning
+
+Graph Edges:
+1. CoastalLandslide o-> Tsunami
+2. SubmarineEarthquake o-> Tsunami
+3. SubmarineEarthquake --> TsunamiWarning
+4. Tsunami --> TsunamiWarning
+

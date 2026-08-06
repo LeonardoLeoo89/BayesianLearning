@@ -1,0 +1,77 @@
+network "unnamedBN" {
+// written by aGrUM 2.3.2
+}
+
+variable Atopy {
+   type discrete[2] {No, Yes};
+}
+
+variable PollenAllergy {
+   type discrete[2] {No, Yes};
+}
+
+variable AllergicRhinitis {
+   type discrete[2] {No, Yes};
+}
+
+variable BirchPollenAllergy {
+   type discrete[2] {No, Yes};
+}
+
+variable HazelnutAllergy {
+   type discrete[2] {No, Yes};
+}
+
+variable AppleAllergy {
+   type discrete[2] {No, Yes};
+}
+
+variable DustMiteAllergy {
+   type discrete[2] {No, Yes};
+}
+
+variable Asthma {
+   type discrete[2] {No, Yes};
+}
+
+probability (Atopy | PollenAllergy, DustMiteAllergy) {
+   (No, No) 0.9531769543966859 0.046823045603313976;
+   (Yes, No) 0.5176470173011357 0.48235298269886423;
+   (No, Yes) 0.67999928000288 0.32000071999712;
+   (Yes, Yes) 0.16666767676461586 0.8333323232353841;
+}
+probability (PollenAllergy | AllergicRhinitis, BirchPollenAllergy, DustMiteAllergy) {
+   (No, No, No) 0.9586203733652596 0.04137962663474025;
+   (Yes, No, No) 0.2452839800604526 0.7547160199395475;
+   (No, Yes, No) 0.5714275510349852 0.4285724489650148;
+   (Yes, Yes, No) 3.703676269064674e-06 0.999996296323731;
+   (No, No, Yes) 0.8909076694266567 0.10909233057334336;
+   (Yes, No, Yes) 0.028574122433586095 0.971425877566414;
+   (No, Yes, Yes) 1.4285306134110454e-05 0.9999857146938658;
+   (Yes, Yes, Yes) 5.263102493657962e-06 0.9999947368975064;
+}
+probability (AllergicRhinitis | BirchPollenAllergy, DustMiteAllergy) {
+   (No, No) 0.8454808481161235 0.15451915188387647;
+   (Yes, No) 0.34146418797957084 0.6585358120204292;
+   (No, Yes) 0.6111108641980796 0.38888913580192047;
+   (Yes, Yes) 0.26923254436504335 0.7307674556349567;
+}
+probability (BirchPollenAllergy | HazelnutAllergy) {
+   (No) 0.9012603356049009 0.098739664395099;
+   (Yes) 0.16666944442129647 0.8333305555787035;
+}
+probability (HazelnutAllergy) {
+   table 0.9519998192000724 0.04800018079992768;
+}
+probability (AppleAllergy | BirchPollenAllergy) {
+   (No) 0.9884524302760137 0.01154756972398627;
+   (Yes) 0.49253733570944563 0.5074626642905543;
+}
+probability (DustMiteAllergy | Asthma) {
+   (No) 0.8711215412307678 0.1288784587692321;
+   (Yes) 0.23456855662084783 0.7654314433791521;
+}
+probability (Asthma) {
+   table 0.8379998648000541 0.16200013519994594;
+}
+

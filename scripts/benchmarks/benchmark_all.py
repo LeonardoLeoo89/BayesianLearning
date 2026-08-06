@@ -15,9 +15,9 @@ from bayesian_learning.SEM_model.learn_sem import (
 from bayesian_learning.utils.export import export_categorical_results, export_sem_results
 
 # Paths to datasets
-CAT_DATA_DIR = "tests/synthetic_data"
-SEM_DATA_DIR = "tests/sem_data"
-OUTPUT_DIR = "tests/benchmark_results"
+CAT_DATA_DIR = "data/categorical"
+SEM_DATA_DIR = "data/sem"
+OUTPUT_DIR = "results/benchmarks"
 
 # Max samples constraint from user
 MAX_SAMPLES = 500

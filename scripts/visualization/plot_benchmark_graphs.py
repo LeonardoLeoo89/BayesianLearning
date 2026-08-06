@@ -144,5 +144,5 @@ def plot_all_benchmark_graphs(input_dir: str, output_dir: str):
                 print(f"Error plotting {f}: {e}")
 
 if __name__ == "__main__":
-    plot_all_benchmark_graphs("tests/benchmark_results", "tests/benchmark_graphs")
+    plot_all_benchmark_graphs("results/benchmarks", "results/benchmark_graphs")
     print("Finished generating plots!")

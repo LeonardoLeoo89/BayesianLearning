@@ -4,11 +4,11 @@ from bayesian_learning.SEM_model.learn_sem import learn_structure, SEMAlgorithm
 from bayesian_learning.SEM_model.result import GranDAGResult
 
 def main():
-    df = pd.read_csv("tests/sem_data/allergy_sem_subset_500_std.csv")
+    df = pd.read_csv("data/sem/allergy_sem_subset_500_std.csv")
     
     # Train GraN-DAG quickly
     result = learn_structure(
-        "tests/sem_data/allergy_sem_subset_500_std.csv", 
+        "data/sem/allergy_sem_subset_500_std.csv", 
         SEMAlgorithm.GRAN_DAG,
         epochs=1,
         iterations=10,

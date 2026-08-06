@@ -97,7 +97,7 @@ TRUE_SEM_EDGES = {
 }
 
 def load_true_categorical_edges(name: str) -> list:
-    bif_path = f"generated_bns/{name}.bif"
+    bif_path = f"data/ground_truth/{name}.bif"
     if not os.path.exists(bif_path): return []
     bn = gum.loadBN(bif_path)
     edges = []
@@ -243,7 +243,7 @@ def create_dummy_bn(nodes, edges):
     return bn
 
 def main():
-    input_dir = "tests/benchmark_results"
+    input_dir = "results/benchmarks"
     files = [f for f in os.listdir(input_dir) if f.endswith('.bif') or f.endswith('.csv')]
     
     results = []
@@ -282,7 +282,7 @@ def main():
                     pred_edges.append((bn.variable(u).name(), bn.variable(v).name()))
                 
                 # Plot graphical diff if we have the true BN
-                true_bif_path = f"generated_bns/{ds_name}.bif"
+                true_bif_path = f"data/ground_truth/{ds_name}.bif"
                 if os.path.exists(true_bif_path):
                     try:
                         true_bn = gum.loadBN(true_bif_path)
@@ -294,7 +294,7 @@ def main():
                 df = pd.read_csv(filepath)
                 mat = df.values
                 if df.columns[0] == '0' or df.columns[0] == 0:
-                    orig_df = pd.read_csv(f"tests/sem_data/{ds_name}.csv")
+                    orig_df = pd.read_csv(f"data/sem/{ds_name}.csv")
                     node_names = orig_df.columns.tolist()
                 else:
                     node_names = df.columns.tolist()
@@ -318,7 +318,7 @@ def main():
             
             # Compute KL Divergence if it's a categorical dataset and we have the true BN
             if 'sem' not in ds_name:
-                true_bif_path = f"generated_bns/{ds_name}.bif"
+                true_bif_path = f"data/ground_truth/{ds_name}.bif"
                 dataset_path = os.path.join("tests", "synthetic_data", f"{ds_name}_samples_subset_500.csv")
                 if os.path.exists(true_bif_path) and os.path.exists(dataset_path):
                     true_bn = gum.loadBN(true_bif_path)
@@ -348,7 +348,7 @@ def main():
     md_table = df_res.to_markdown(index=False)
     print(md_table)
     
-    with open("tests/benchmark_results/accuracy_report.md", "w") as out:
+    with open("results/benchmarks/accuracy_report.md", "w") as out:
         out.write("# Structural Accuracy Report\n\n")
         out.write("This table compares the learned networks against the true ground-truth network structures that generated the data.\n\n")
         out.write("- **SHD**: Structural Hamming Distance (lower is better, 0 is perfect). The number of edge additions, deletions, or reversals needed to match the true graph.\n")

@@ -53,16 +53,16 @@ def plot_marginals(bn: gum.BayesNet, title: str, output_path: str):
     print(f"Saved marginals plot to {output_path}")
 
 if __name__ == "__main__":
-    os.makedirs("tests/probability_plots", exist_ok=True)
+    os.makedirs("results/probability_plots", exist_ok=True)
     
     # Load networks
-    tsunami_bn = gum.loadBN("generated_bns/tsunami.bif")
-    allergy_bn = gum.loadBN("generated_bns/allergy.bif")
-    train_bn = gum.loadBN("generated_bns/train_delay.bif")
+    tsunami_bn = gum.loadBN("data/ground_truth/tsunami.bif")
+    allergy_bn = gum.loadBN("data/ground_truth/allergy.bif")
+    train_bn = gum.loadBN("data/ground_truth/train_delay.bif")
     
     print("Generating marginal probability plots...")
-    plot_marginals(tsunami_bn, "Tsunami Risk Network", "tests/probability_plots/tsunami_marginals.png")
-    plot_marginals(allergy_bn, "Allergy Cross-Reactivity Network", "tests/probability_plots/allergy_marginals.png")
-    plot_marginals(train_bn, "Train Delay Prediction Network", "tests/probability_plots/train_delay_marginals.png")
+    plot_marginals(tsunami_bn, "Tsunami Risk Network", "results/probability_plots/tsunami_marginals.png")
+    plot_marginals(allergy_bn, "Allergy Cross-Reactivity Network", "results/probability_plots/allergy_marginals.png")
+    plot_marginals(train_bn, "Train Delay Prediction Network", "results/probability_plots/train_delay_marginals.png")
     
     print("\nSuccessfully generated probability plots!")

@@ -31,23 +31,23 @@ def generate_data(bif_file: str, output_csv: str, n_samples: int = 1000):
     print(f"Successfully generated {n_samples} samples and saved to {output_csv}\n")
     
 if __name__ == "__main__":
-    os.makedirs("tests/synthetic_data", exist_ok=True)
+    os.makedirs("data/categorical", exist_ok=True)
     
     generate_data(
-        bif_file="generated_bns/tsunami.bif", 
-        output_csv="tests/synthetic_data/tsunami_samples.csv",
+        bif_file="data/ground_truth/tsunami.bif", 
+        output_csv="data/categorical/tsunami_samples.csv",
         n_samples=5000
     )
     
     generate_data(
-        bif_file="generated_bns/allergy.bif", 
-        output_csv="tests/synthetic_data/allergy_samples.csv",
+        bif_file="data/ground_truth/allergy.bif", 
+        output_csv="data/categorical/allergy_samples.csv",
         n_samples=5000
     )
     
     generate_data(
-        bif_file="generated_bns/train_delay.bif", 
-        output_csv="tests/synthetic_data/train_delay_samples.csv",
+        bif_file="data/ground_truth/train_delay.bif", 
+        output_csv="data/categorical/train_delay_samples.csv",
         n_samples=5000
     )
     

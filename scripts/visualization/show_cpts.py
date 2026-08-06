@@ -12,15 +12,15 @@ def export_cpts_to_txt(bn: gum.BayesNet, output_file: str):
             f.write("\n\n")
             
 if __name__ == "__main__":
-    os.makedirs("tests/cpt_tables", exist_ok=True)
+    os.makedirs("results/cpt_tables", exist_ok=True)
     
     # Load networks
-    tsunami_bn = gum.loadBN("generated_bns/tsunami.bif")
-    allergy_bn = gum.loadBN("generated_bns/allergy.bif")
-    train_bn = gum.loadBN("generated_bns/train_delay.bif")
+    tsunami_bn = gum.loadBN("data/ground_truth/tsunami.bif")
+    allergy_bn = gum.loadBN("data/ground_truth/allergy.bif")
+    train_bn = gum.loadBN("data/ground_truth/train_delay.bif")
     
-    export_cpts_to_txt(tsunami_bn, "tests/cpt_tables/tsunami_cpts.txt")
-    export_cpts_to_txt(allergy_bn, "tests/cpt_tables/allergy_cpts.txt")
-    export_cpts_to_txt(train_bn, "tests/cpt_tables/train_delay_cpts.txt")
+    export_cpts_to_txt(tsunami_bn, "results/cpt_tables/tsunami_cpts.txt")
+    export_cpts_to_txt(allergy_bn, "results/cpt_tables/allergy_cpts.txt")
+    export_cpts_to_txt(train_bn, "results/cpt_tables/train_delay_cpts.txt")
     
     print("Exported all CPTs to tests/cpt_tables/")

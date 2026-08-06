@@ -154,8 +154,8 @@ if __name__ == "__main__":
     print(f"Generated Train Delay BN with {train_bn.size()} nodes and {train_bn.sizeArcs()} arcs.")
     
     # Save BIF files (Bayesian Interchange Format)
-    os.makedirs("generated_bns", exist_ok=True)
-    gum.saveBN(tsunami_bn, "generated_bns/tsunami.bif")
-    gum.saveBN(allergy_bn, "generated_bns/allergy.bif")
-    gum.saveBN(train_bn, "generated_bns/train_delay.bif")
-    print("Saved BIF files (including generated CPTs) to 'generated_bns' directory.")
+    os.makedirs("data/ground_truth", exist_ok=True)
+    gum.saveBN(tsunami_bn, "data/ground_truth/tsunami.bif")
+    gum.saveBN(allergy_bn, "data/ground_truth/allergy.bif")
+    gum.saveBN(train_bn, "data/ground_truth/train_delay.bif")
+    print("Saved BIF files (including generated CPTs) to 'data/ground_truth' directory.")
