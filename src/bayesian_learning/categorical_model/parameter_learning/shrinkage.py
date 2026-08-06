@@ -4,7 +4,20 @@ from pandas.core.series import Series
 import numpy as np
 from typing import Any
 
-def learn_shrinkage_parameters(location: str, bn: Any) -> Any:
+def learn_shrinkage_parameters(location: str, bn: Any) -> gum.BayesNet:
+    """Shrinkage estimator for parameter learning.
+
+        Applies the shrinkage estimator on an already
+        defined structure and a dataset to learn the
+        bayesian network's CPTS
+
+        Args:
+            location: The path of the dataset (csv).
+            bn: A bayesian network with an already defined structure.
+
+        Returns:
+            The bayesian network with updated CPTS.
+        """
     df: pd.DataFrame = pd.read_csv(location)
     for col in df.columns:
         df[col] = df[col].astype(str)
