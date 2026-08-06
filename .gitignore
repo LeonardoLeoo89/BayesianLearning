@@ -33,3 +33,10 @@ dummy.csv
 
 tests/benchmark_graphs/
 report/
+results/
+
+# Ignored as requested
+main.bbl
+main.blg
+texput.log
+tests/benchmark_results.zip
