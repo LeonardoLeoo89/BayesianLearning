@@ -11,10 +11,6 @@ from PIL import Image, ImageDraw, ImageFont
 
 def save_combined_diff_png(true_bn, pred_bn, output_path):
     # Generate temporary PNGs for each component at 150 DPI to prevent them from being too large
-    true_dot = gumimage.BN2dot(true_bn)
-    true_dot.set_dpi("150")
-    true_dot.write_png("tmp_true.png")
-    
     pred_dot = gumimage.BN2dot(pred_bn)
     pred_dot.set_dpi("150")
     pred_dot.write_png("tmp_pred.png")
@@ -26,17 +22,17 @@ def save_combined_diff_png(true_bn, pred_bn, output_path):
             
     diff_dot.write_png("tmp_diff.png")
     
-    images = [Image.open(x).convert("RGBA") for x in ['tmp_true.png', 'tmp_pred.png', 'tmp_diff.png']]
-    labels = ["Original Graph", "Inferred Graph", "Differences"]
+    images = [Image.open(x).convert("RGBA") for x in ['tmp_pred.png', 'tmp_diff.png']]
+    labels = ["Inferred Graph", "Differences"]
     
     widths, heights = zip(*(i.size for i in images))
     
     padding = 60
-    max_width = max(widths) + padding * 2
-    total_height = sum(heights) + padding * 4 + 150 # extra 150 for text labels
+    total_width = sum(widths) + padding * 3
+    max_height = max(heights) + padding * 2 + 60 # extra 60 for text labels
     
     # White background instead of transparent
-    new_im = Image.new('RGBA', (max_width, total_height), color=(255, 255, 255, 255))
+    new_im = Image.new('RGBA', (total_width, max_height), color=(255, 255, 255, 255))
     draw = ImageDraw.Draw(new_im)
     
     try:
@@ -44,34 +40,36 @@ def save_combined_diff_png(true_bn, pred_bn, output_path):
     except:
         font = ImageFont.load_default()
     
-    y_offset = padding
+    # Draw dark background for the Differences section (right half)
+    # The right half starts between the two images
+    right_x_start = widths[0] + int(padding * 1.5)
+    draw.rectangle([right_x_start, 0, total_width, max_height], fill="#202020")
+    
+    x_offset = padding
     for i, (img, label) in enumerate(zip(images, labels)):
-        text_color = "black"
-        if label == "Differences":
-            # Draw a dark background for the differences section and down
-            draw.rectangle([0, y_offset - padding//2, max_width, total_height], fill="#202020")
-            text_color = "white"
+        text_color = "black" if i == 0 else "white"
             
-        # Center the text
+        # Draw label (centered above the respective image)
         try:
             text_bbox = draw.textbbox((0, 0), label, font=font)
             text_width = text_bbox[2] - text_bbox[0]
         except:
             text_width = len(label) * 6 # fallback approximation
             
-        x_text = (max_width - text_width) // 2
-        draw.text((x_text, y_offset), label, fill=text_color, font=font)
-        y_offset += 50
+        x_text = x_offset + (img.width - text_width) // 2
+        y_text = padding // 2
+        draw.text((x_text, y_text), label, fill=text_color, font=font)
         
-        # Center the image
-        x_img = (max_width - img.width) // 2
-        new_im.paste(img, (x_img, y_offset), mask=img)
-        y_offset += img.height + padding
+        # Draw image (vertically centered if smaller, or just below text)
+        y_img = padding // 2 + 60 + (max_height - padding - 60 - img.height) // 2
+        new_im.paste(img, (x_offset, y_img), mask=img)
+        
+        x_offset += img.width + padding
         
     new_im.save(output_path)
     
     # Cleanup temps
-    for tmp in ['tmp_true.png', 'tmp_pred.png', 'tmp_diff.png']:
+    for tmp in ['tmp_pred.png', 'tmp_diff.png']:
         if os.path.exists(tmp):
             os.remove(tmp)
 
@@ -235,6 +233,15 @@ def calculate_metrics(true_edges, pred_edges, nodes):
         "F1": f1
     }
 
+def create_dummy_bn(nodes, edges):
+    bn = gum.BayesNet()
+    for n in nodes:
+        bn.add(gum.LabelizedVariable(str(n), str(n), 2))
+    dag_edges = make_dag(edges, set(nodes))
+    for u, v in dag_edges:
+        bn.addArc(str(u), str(v))
+    return bn
+
 def main():
     input_dir = "tests/benchmark_results"
     files = [f for f in os.listdir(input_dir) if f.endswith('.bif') or f.endswith('.csv')]
@@ -295,6 +302,17 @@ def main():
                     for j in range(mat.shape[1]):
                         if abs(mat[i, j]) > 0.1:
                             pred_edges.append((node_names[i], node_names[j]))
+                
+                # Generate diff plot for SEM
+                if ds_name in TRUE_SEM_EDGES:
+                    try:
+                        all_nodes = list(set(nodes) | set(node_names))
+                        true_bn = create_dummy_bn(all_nodes, true_edges)
+                        pred_bn = create_dummy_bn(all_nodes, pred_edges)
+                        diff_path = os.path.join(input_dir, f"{f}_diff.png")
+                        save_combined_diff_png(true_bn, pred_bn, diff_path)
+                    except Exception as e:
+                        print(f"Failed to plot SEM diff for {f}: {e}")
                 
             metrics = calculate_metrics(true_edges, pred_edges, nodes)
             

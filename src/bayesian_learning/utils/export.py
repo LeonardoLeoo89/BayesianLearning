@@ -6,19 +6,21 @@ import pandas as pd
 from bayesian_learning.SEM_model.result import SEMResult
 
 def plot_and_save_networkx(G: nx.DiGraph, output_path: str):
-    """Utility function to plot a networkx DiGraph and save it to a file."""
-    plt.figure(figsize=(14, 10))
-
-    pos = nx.spring_layout(G, k=3.5, iterations=200, seed=42)
-
-    nx.draw(G, pos, with_labels=True, node_color='lightblue',
-            node_size=4000, font_size=10, font_weight='bold',
-            arrows=True, arrowsize=25, edge_color='gray')
-
-    plt.margins(0.15)
-    plt.title("Learned Directed Acyclic Graph")
-    plt.savefig(output_path, bbox_inches='tight', dpi=150)
-    plt.close()
+    """Utility function to plot a networkx DiGraph and save it to a file using PyDot."""
+    import pydot
+    graph = pydot.Dot(graph_type="digraph", bgcolor="white", rankdir="TB")
+    graph.set_node_defaults(shape="box", style="rounded,filled", fillcolor="lightgreen", fontname="monospace", fontsize="10")
+    graph.set_edge_defaults(color="gray40", arrowhead="normal", arrowsize="1.0", penwidth="1.2")
+    
+    for n in G.nodes():
+        node = pydot.Node(str(n), label=str(n))
+        graph.add_node(node)
+        
+    for u, v in G.edges():
+        edge = pydot.Edge(str(u), str(v))
+        graph.add_edge(edge)
+        
+    graph.write_png(output_path)
 
 def export_categorical_results(bn: gum.BayesNet, output_prefix: str):
     """

@@ -1,63 +1,25 @@
-import matplotlib.pyplot as plt
-import networkx as nx
+import pydot
 import pyagrum as gum
 import os
 
 def draw_network_with_probs(bn: gum.BayesNet, filename: str):
-    """Draw a pyagrum BayesNet using NetworkX with marginal probabilities in the labels."""
-    ie = gum.LazyPropagation(bn)
-    ie.makeInference()
-    
-    G = nx.DiGraph()
-    labels = {}
-    
-    # Add nodes and construct labels with marginal probabilities
+    """Draw a pyagrum BayesNet using PyDot."""
+    graph = pydot.Dot(graph_type="digraph", bgcolor="white", rankdir="TB")
+    graph.set_node_defaults(shape="box", style="rounded,filled", fillcolor="lightgreen", fontname="monospace", fontsize="10")
+    graph.set_edge_defaults(color="gray40", arrowhead="normal", arrowsize="1.0", penwidth="1.2")
+
     for i in bn.nodes():
         node_name = bn.variable(i).name()
-        G.add_node(node_name)
+        node = pydot.Node(node_name, label=node_name)
+        graph.add_node(node)
         
-        # Calculate marginals
-        posterior = ie.posterior(node_name)
-        
-        # Build the label text
-        label_text = f"{node_name}\n" + "-"*len(node_name) + "\n"
-        for idx in range(bn.variable(i).domainSize()):
-            state = bn.variable(i).label(idx)
-            prob = posterior[idx]
-            label_text += f"{state}: {prob:.3f}\n"
-            
-        labels[node_name] = label_text.strip()
-        
-    # Add edges
     for u, v in bn.arcs():
-        G.add_edge(bn.variable(u).name(), bn.variable(v).name())
+        u_name = bn.variable(u).name()
+        v_name = bn.variable(v).name()
+        edge = pydot.Edge(u_name, v_name)
+        graph.add_edge(edge)
         
-    # Layout and plotting
-    plt.figure(figsize=(14, 10))
-    pos = nx.spring_layout(G, seed=42, k=1.5)  # Seed for reproducible layout, larger k for spacing
-    
-    # Draw
-    nx.draw(G, pos, 
-            labels=labels,
-            node_color='lightgreen', 
-            node_size=8000, 
-            node_shape="s",  # square shape to better fit text
-            edge_color='gray', 
-            linewidths=1, 
-            font_size=9, 
-            font_weight='bold',
-            font_family='monospace',
-            arrows=True, 
-            arrowsize=20)
-            
-    # Draw node borders manually since nx.draw square borders can sometimes be cut off
-    ax = plt.gca()
-    ax.margins(0.20)
-            
-    plt.title(f"Bayesian Network with Marginal Probabilities: {bn.property('name') if 'name' in bn.properties() else 'Network'}", pad=20, fontsize=14)
-    plt.tight_layout()
-    plt.savefig(filename, dpi=300, bbox_inches='tight')
-    plt.close()
+    graph.write_png(filename)
     print(f"Saved {filename}")
 
 if __name__ == "__main__":

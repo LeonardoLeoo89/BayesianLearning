@@ -81,7 +81,7 @@ def learn_parameters(location: str, dag: Any,
             learner.useEM(1e-3)
             learner.useSmoothingPrior(1.0)
         case ParameterAlgorithm.BAYESIAN_DIRICHLET_PRIORS:
-            learner.useDirichletPrior()
+            learner.useBDeuPrior(1.0)
         case ParameterAlgorithm.MLE:
             learner.useSmoothingPrior(1e-4)
         case ParameterAlgorithm.SHRINKAGE_ESTIMATOR:
