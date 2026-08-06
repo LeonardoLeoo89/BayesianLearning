@@ -17,13 +17,18 @@ RUN pip install --no-cache-dir uv
 WORKDIR /app
 
 # Copy dependency files first to leverage Docker cache
-COPY pyproject.toml uv.lock README.md ./
+COPY pyproject.toml uv.lock ./
+
+# Create an empty README.md because pyproject.toml requires it,
+# but we don't want changes to the real README.md to invalidate the cache.
+RUN touch README.md
 
 # Sync dependencies without installing the project itself yet
 ENV UV_PROJECT_ENVIRONMENT=/app/.venv
 RUN uv sync --frozen --no-install-project
 
 # Copy the rest of the application
+COPY README.md ./
 COPY src/ ./src/
 COPY scripts/ ./scripts/
 COPY data/ ./data/
@@ -34,5 +39,7 @@ RUN uv sync --frozen
 # Add the virtual environment to PATH so that python commands run inside it
 ENV PATH="/app/.venv/bin:$PATH"
 
-# Default command: display CLI help
-CMD ["bayesian-learn", "--help"]
+# Use the CLI tool as the entrypoint
+ENTRYPOINT ["bayesian-learn"]
+# Default argument
+CMD ["--help"]
