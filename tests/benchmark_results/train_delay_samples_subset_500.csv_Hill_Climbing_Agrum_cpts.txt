@@ -1,0 +1,111 @@
+--- CPT for TimeOfDay ---
+
+      ||  TimeOfDay                            |
+Passen||EveningRu|Midday   |MorningRu|Night    |
+------||---------|---------|---------|---------|
+High  || 0.0098  | 0.0634  | 0.4244  | 0.5024  |
+Low   || 0.2804  | 0.0159  | 0.4497  | 0.2540  |
+Normal|| 0.7453  | 0.1887  | 0.0094  | 0.0566  |
+
+
+--- CPT for PassengerVolume ---
+
+  PassengerVolume            |
+High     |Low      |Normal   |
+---------|---------|---------|
+ 0.4100  | 0.3780  | 0.2120  |
+
+
+--- CPT for HubCongestion ---
+
+      ||  HubCongestion    |
+Passen||False    |True     |
+------||---------|---------|
+High  || 0.8634  | 0.1366  |
+Low   || 0.5026  | 0.4974  |
+Normal|| 0.1792  | 0.8208  |
+
+
+--- CPT for Season ---
+
+  Season                               |
+Autumn   |Spring   |Summer   |Winter   |
+---------|---------|---------|---------|
+ 0.3920  | 0.3920  | 0.0720  | 0.1440  |
+
+
+--- CPT for Weather ---
+
+      ||  Weather                              |
+Season||Clear    |Rain     |Snow     |Storm    |
+------||---------|---------|---------|---------|
+Autumn|| 0.4082  | 0.3622  | 0.1429  | 0.0867  |
+Spring|| 0.2398  | 0.1888  | 0.4898  | 0.0816  |
+Summer|| 0.1667  | 0.0278  | 0.3889  | 0.4167  |
+Winter|| 0.2639  | 0.1806  | 0.2639  | 0.2917  |
+
+
+--- CPT for TrackIncident ---
+
+      ||  TrackIncident    |
+SpeedR||False    |True     |
+------||---------|---------|
+False || 0.3960  | 0.6040  |
+True  || 0.7870  | 0.2130  |
+
+
+--- CPT for InfraFailure ---
+
+             ||  InfraFailure     |
+Depart|HubCon||False    |True     |
+------|------||---------|---------|
+Major |False || 0.4940  | 0.5060  |
+Minor |False || 0.7357  | 0.2643  |
+NoDela|False || 0.0294  | 0.9706  |
+Major |True  || 0.2703  | 0.7297  |
+Minor |True  || 0.2237  | 0.7763  |
+NoDela|True  || 0.7797  | 0.2203  |
+
+
+--- CPT for DepartureDelay ---
+
+             ||  DepartureDelay             |
+Arriva|SpeedR||Major    |Minor    |NoDelay  |
+------|------||---------|---------|---------|
+Major |False || 0.2500  | 0.7000  | 0.0500  |
+Minor |False || 0.2041  | 0.3673  | 0.4286  |
+NoDela|False || 0.4062  | 0.5937  | 0.0000  |
+Major |True  || 0.1236  | 0.7865  | 0.0899  |
+Minor |True  || 0.6045  | 0.3164  | 0.0791  |
+NoDela|True  || 0.0827  | 0.2932  | 0.6241  |
+
+
+--- CPT for SpeedRestriction ---
+
+      ||  SpeedRestriction |
+Weathe||False    |True     |
+------||---------|---------|
+Clear || 0.3750  | 0.6250  |
+Rain  || 0.0820  | 0.9180  |
+Snow  || 0.1019  | 0.8981  |
+Storm || 0.2609  | 0.7391  |
+
+
+--- CPT for ArrivalDelay ---
+
+  ArrivalDelay               |
+Major    |Minor    |NoDelay  |
+---------|---------|---------|
+ 0.2180  | 0.4520  | 0.3300  |
+
+
+--- CPT for CompensationClaim ---
+
+      ||  CompensationClaim|
+Arriva||False    |True     |
+------||---------|---------|
+Major || 0.5505  | 0.4495  |
+Minor || 0.5354  | 0.4646  |
+NoDela|| 0.9273  | 0.0727  |
+
+
