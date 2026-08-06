@@ -1,20 +1,19 @@
-# Bayesian Learning Platform
+# Bayesian Learning
 
-A unified platform for learning Bayesian networks (K2, PC, EM) and modern neural causal methods (DAG-GNN, GraN-DAG), along with a synthetic data generation suite.
+Una piattaforma unificata per l'apprendimento di reti bayesiane e SEM.
 
-## Quickstart
+## Installazione
 
-We recommend using [`uv`](https://astral.sh/uv) for lightning-fast installation.
+Le dipendenze del progetto sono gestite con uv.
 
 ```bash
 # 1. Clone
 git clone https://github.com/LeonardoLeoo89/BayesianLearning.git
 cd BayesianLearning
 
-# 2. Setup environment & install dependencies
-uv venv
-uv pip install -e .
+# 2. Setup ambiente e dipendenze
+uv sync
 
-# 3. Run
-uv run python src/bayesian_learning/main.py
+# 3. Informazioni sullo usage 
+uv run bayesian-learn --help
 ```
