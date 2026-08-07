@@ -10,70 +10,62 @@ import pydot
 from PIL import Image, ImageDraw, ImageFont
 
 def save_combined_diff_png(true_bn, pred_bn, output_path):
-    # Generate temporary PNGs for each component at 150 DPI to prevent them from being too large
     pred_dot = gumimage.BN2dot(pred_bn)
     pred_dot.set_dpi("150")
     pred_dot.write_png("tmp_pred.png")
-    
+
     comparator = cmp.GraphicalBNComparator(true_bn, pred_bn)
     diff_dot = comparator.dotDiff()
     diff_dot.set_dpi("150")
-    diff_dot.set_size("5") # Match original graph size limit
-            
+    diff_dot.set_size("5")
+
     diff_dot.write_png("tmp_diff.png")
-    
+
     images = [Image.open(x).convert("RGBA") for x in ['tmp_pred.png', 'tmp_diff.png']]
     labels = ["Inferred Graph", "Differences"]
-    
+
     widths, heights = zip(*(i.size for i in images))
-    
+
     padding = 60
     total_width = sum(widths) + padding * 3
-    max_height = max(heights) + padding * 2 + 60 # extra 60 for text labels
-    
-    # White background instead of transparent
+    max_height = max(heights) + padding * 2 + 60
+
     new_im = Image.new('RGBA', (total_width, max_height), color=(255, 255, 255, 255))
     draw = ImageDraw.Draw(new_im)
-    
+
     try:
         font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 35)
     except:
         font = ImageFont.load_default()
-    
-    # Draw dark background for the Differences section (right half)
-    # The right half starts between the two images
+
     right_x_start = widths[0] + int(padding * 1.5)
     draw.rectangle([right_x_start, 0, total_width, max_height], fill="#202020")
-    
+
     x_offset = padding
     for i, (img, label) in enumerate(zip(images, labels)):
         text_color = "black" if i == 0 else "white"
-            
-        # Draw label (centered above the respective image)
+
         try:
             text_bbox = draw.textbbox((0, 0), label, font=font)
             text_width = text_bbox[2] - text_bbox[0]
         except:
-            text_width = len(label) * 6 # fallback approximation
-            
+            text_width = len(label) * 6
+
         x_text = x_offset + (img.width - text_width) // 2
         y_text = padding // 2
         draw.text((x_text, y_text), label, fill=text_color, font=font)
-        
-        # Draw image (vertically centered if smaller, or just below text)
+
         y_img = padding // 2 + 60 + (max_height - padding - 60 - img.height) // 2
         new_im.paste(img, (x_offset, y_img), mask=img)
-        
+
         x_offset += img.width + padding
-        
+
     new_im.save(output_path)
-    
-    # Cleanup temps
+
     for tmp in ['tmp_pred.png', 'tmp_diff.png']:
         if os.path.exists(tmp):
             os.remove(tmp)
 
-# Define true networks for SEM datasets
 TRUE_SEM_EDGES = {
     'tsunami_sem': [
         ('Earthquake', 'TsunamiHeight'), ('SubmarineProximity', 'TsunamiHeight'),
@@ -110,11 +102,11 @@ def load_true_categorical_edges(name: str) -> list:
 def make_dag(pred_edges, nodes):
     G = nx.DiGraph()
     G.add_nodes_from(nodes)
-    
+
     edge_counts = {}
     for u, v in pred_edges:
         edge_counts[(u, v)] = 1
-        
+
     directed = []
     undirected = []
     for u, v in pred_edges:
@@ -123,12 +115,12 @@ def make_dag(pred_edges, nodes):
                 undirected.append((u, v))
         else:
             directed.append((u, v))
-            
+
     for u, v in directed:
         G.add_edge(u, v)
         if not nx.is_directed_acyclic_graph(G):
             G.remove_edge(u, v)
-            
+
     for u, v in undirected:
         G.add_edge(u, v)
         if not nx.is_directed_acyclic_graph(G):
@@ -136,7 +128,7 @@ def make_dag(pred_edges, nodes):
             G.add_edge(v, u)
             if not nx.is_directed_acyclic_graph(G):
                 G.remove_edge(v, u)
-                
+
     return list(G.edges())
 
 def sort_bn(bn: gum.BayesNet) -> gum.BayesNet:
@@ -147,10 +139,10 @@ def sort_bn(bn: gum.BayesNet) -> gum.BayesNet:
         new_var = gum.LabelizedVariable(n, n, 0)
         for lbl in labels: new_var.addLabel(lbl)
         sorted_bn.add(new_var)
-        
+
     for u, v in bn.arcs():
         sorted_bn.addArc(bn.variable(u).name(), bn.variable(v).name())
-        
+
     for n in bn.names():
         cpt, new_cpt = bn.cpt(n), sorted_bn.cpt(n)
         inst_new, inst_old = gum.Instantiation(new_cpt), gum.Instantiation(cpt)
@@ -169,22 +161,22 @@ def calculate_kl_divergence(true_bn: gum.BayesNet, pred_edges: list, dataset_pat
     try:
         df = pd.read_csv(dataset_path)
         nodes = list(df.columns)
-        
+
         sorted_true_bn = sort_bn(true_bn)
         pred_bn_aligned = gum.BayesNet()
-        
+
         for n in nodes:
             pred_bn_aligned.add(sorted_true_bn.variableFromName(n))
-            
+
         dag_edges = make_dag(pred_edges, set(nodes))
         for u, v in dag_edges:
             pred_bn_aligned.addArc(u, v)
-        
+
         pred_bn_fitted = learn_parameters(dataset_path, pred_bn_aligned.dag(), ParameterAlgorithm.MLE)
-        
+
         dist = gum.ExactBNdistance(sorted_true_bn, pred_bn_fitted)
         res = dist.compute()
-        
+
         return {
             'KL_Div': res.get('klPQ', float('nan')),
             'Hellinger': res.get('hellinger', float('nan')),
@@ -201,30 +193,26 @@ def calculate_kl_divergence(true_bn: gum.BayesNet, pred_edges: list, dataset_pat
         }
 
 def calculate_metrics(true_edges, pred_edges, nodes):
-    # Convert to sets of tuples for easier math
     true_set = set(true_edges)
     pred_set = set(pred_edges)
-    
-    # Structural Hamming Distance
-    # Reverse edges
+
     reversed_edges = 0
     for u, v in list(pred_set):
         if (v, u) in true_set and (u, v) not in true_set:
             reversed_edges += 1
             pred_set.remove((u, v))
             pred_set.add((v, u))
-            
-    # After flipping reversed edges, compute TP, FP, FN
+
     tp = len(true_set.intersection(pred_set))
     fp = len(pred_set - true_set)
     fn = len(true_set - pred_set)
-    
+
     shd = reversed_edges + fp + fn
-    
+
     precision = tp / (tp + fp) if (tp + fp) > 0 else 0
     recall = tp / (tp + fn) if (tp + fn) > 0 else 0
     f1 = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0
-    
+
     return {
         "SHD": shd,
         "TP": tp,
@@ -245,14 +233,13 @@ def create_dummy_bn(nodes, edges):
 def main():
     input_dir = "results/benchmarks"
     files = [f for f in os.listdir(input_dir) if f.endswith('.bif') or f.endswith('.csv')]
-    
+
     results = []
-    
+
     for f in files:
         if f == "benchmark_results.csv": continue
         filepath = os.path.join(input_dir, f)
-        
-        # Determine dataset name and algorithm
+
         base_name = f.replace("_subset_500.csv", "")
         if "adjacency" in base_name:
             ds_name = base_name.split("_sem_")[0] + "_sem"
@@ -261,27 +248,23 @@ def main():
             ds_name = base_name.split("_samples_")[0]
             algo = base_name.split("_samples_")[1]
             if algo.endswith(".bif"): algo = algo[:-4]
-            
-        # Get True Edges
+
         if ds_name in TRUE_SEM_EDGES:
             true_edges = TRUE_SEM_EDGES[ds_name]
         else:
             true_edges = load_true_categorical_edges(ds_name)
             if not true_edges:
                 continue
-                
-        # Get nodes from true edges to be safe
+
         nodes = set([u for u, v in true_edges] + [v for u, v in true_edges])
-        
-        # Load Pred Edges
+
         pred_edges = []
         try:
             if f.endswith('.bif'):
                 bn = gum.loadBN(filepath)
                 for u, v in bn.arcs():
                     pred_edges.append((bn.variable(u).name(), bn.variable(v).name()))
-                
-                # Plot graphical diff if we have the true BN
+
                 true_bif_path = f"data/ground_truth/{ds_name}.bif"
                 if os.path.exists(true_bif_path):
                     try:
@@ -302,8 +285,7 @@ def main():
                     for j in range(mat.shape[1]):
                         if abs(mat[i, j]) > 0.1:
                             pred_edges.append((node_names[i], node_names[j]))
-                
-                # Generate diff plot for SEM
+
                 if ds_name in TRUE_SEM_EDGES:
                     try:
                         all_nodes = list(set(nodes) | set(node_names))
@@ -313,10 +295,9 @@ def main():
                         save_combined_diff_png(true_bn, pred_bn, diff_path)
                     except Exception as e:
                         print(f"Failed to plot SEM diff for {f}: {e}")
-                
+
             metrics = calculate_metrics(true_edges, pred_edges, nodes)
-            
-            # Compute KL Divergence if it's a categorical dataset and we have the true BN
+
             if 'sem' not in ds_name:
                 true_bif_path = f"data/ground_truth/{ds_name}.bif"
                 dataset_path = os.path.join("tests", "synthetic_data", f"{ds_name}_samples_subset_500.csv")
@@ -328,26 +309,25 @@ def main():
                     metrics.update({'KL_Div': float('nan'), 'Hellinger': float('nan'), 'Bhattacharyya': float('nan'), 'Jensen_Shannon': float('nan')})
             else:
                 metrics.update({'KL_Div': float('nan'), 'Hellinger': float('nan'), 'Bhattacharyya': float('nan'), 'Jensen_Shannon': float('nan')})
-            
+
             metrics['Dataset'] = ds_name
             metrics['Algorithm'] = algo
             metrics['Algorithm_Type'] = "SEM" if "sem" in ds_name else "Categorical"
             results.append(metrics)
         except Exception as e:
             print(f"Failed on {f}: {e}")
-            
-    # Print Markdown Table
+
     df_res = pd.DataFrame(results)
     if df_res.empty:
         print("No results found.")
         return
-        
+
     df_res = df_res.sort_values(by=["Algorithm_Type", "Dataset", "Algorithm"])
     df_res = df_res[["Algorithm_Type", "Dataset", "Algorithm", "SHD", "TP", "FP", "FN", "F1", "KL_Div", "Hellinger", "Bhattacharyya", "Jensen_Shannon"]]
-    
+
     md_table = df_res.to_markdown(index=False)
     print(md_table)
-    
+
     with open("results/benchmarks/accuracy_report.md", "w") as out:
         out.write("# Structural Accuracy Report\n\n")
         out.write("This table compares the learned networks against the true ground-truth network structures that generated the data.\n\n")

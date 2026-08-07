@@ -11,10 +11,10 @@ def sort_bn(bn: gum.BayesNet) -> gum.BayesNet:
         new_var = gum.LabelizedVariable(n, n, 0)
         for lbl in labels: new_var.addLabel(lbl)
         sorted_bn.add(new_var)
-        
+
     for u, v in bn.arcs():
         sorted_bn.addArc(bn.variable(u).name(), bn.variable(v).name())
-        
+
     for n in bn.names():
         cpt, new_cpt = bn.cpt(n), sorted_bn.cpt(n)
         inst_new, inst_old = gum.Instantiation(new_cpt), gum.Instantiation(cpt)
@@ -34,42 +34,37 @@ def main():
         ("BDeu", ParameterAlgorithm.BAYESIAN_DIRICHLET_PRIORS),
         ("Shrinkage", ParameterAlgorithm.SHRINKAGE_ESTIMATOR)
     ]
-    
+
     results = []
-    
+
     for ds_name in datasets:
         dataset_path = f"data/categorical/{ds_name}_samples_subset_500.csv"
         bif_path = f"data/ground_truth/{ds_name}.bif"
         if not os.path.exists(dataset_path) or not os.path.exists(bif_path):
             continue
-            
+
         true_bn = gum.loadBN(bif_path)
         sorted_true_bn = sort_bn(true_bn)
-        
+
         df = pd.read_csv(dataset_path)
         nodes = list(df.columns)
-        
+
         # Create aligned BN structure
         aligned_bn = gum.BayesNet()
         for n in nodes:
             aligned_bn.add(sorted_true_bn.variableFromName(n))
         for u, v in sorted_true_bn.arcs():
             aligned_bn.addArc(sorted_true_bn.variable(u).name(), sorted_true_bn.variable(v).name())
-            
+
         for algo_name, algo_enum in algos:
             try:
-                # We save aligned_bn DAG and learn parameters
                 pred_bn_fitted = learn_parameters(dataset_path, aligned_bn.dag(), algo_enum)
-                
-                # To compare exact BN distance, both must have identical variables
-                # The output of learn_parameters uses variables from data, which might not be sorted!
-                # Wait, learn_parameters takes `dag` which doesn't have variables, it uses learner which learns variables from CSV.
-                # So we must sort pred_bn_fitted to match sorted_true_bn!
+
                 sorted_pred_bn = sort_bn(pred_bn_fitted)
-                
+
                 dist = gum.ExactBNdistance(sorted_true_bn, sorted_pred_bn)
                 res = dist.compute()
-                
+
                 results.append({
                     "Dataset": ds_name,
                     "Algorithm": algo_name,
@@ -80,7 +75,7 @@ def main():
                 })
             except Exception as e:
                 print(f"Failed {ds_name} {algo_name}: {e}")
-                
+
     df_res = pd.DataFrame(results)
     print(df_res.to_markdown(index=False))
 
