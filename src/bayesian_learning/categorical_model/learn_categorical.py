@@ -21,8 +21,23 @@ class ParameterAlgorithm(Enum):
 
 def learn(location: str, structure_algo: StructureAlgorithm,
     parameter_algo: ParameterAlgorithm = ParameterAlgorithm.MLE) -> gum.BayesNet:
+    """Bayesian network learning (structure + parameters)
+
+        Args:
+            location: The path of the dataset (csv).
+            structure_algo: The structure learning algorithm to use.
+            parameter_algo: The parameter learning algorithm to use.
+                Defaults to ParameterAlgorithm.MLE.
+
+        Returns:
+            The learned bayesian network.
+
+        Raises:
+            InvalidBranchException: If the program enters an unexpected branch.
+            ValueError: If the input is contradictory.
+        """
     if structure_algo == StructureAlgorithm.STRUCTURAL_EM and parameter_algo != ParameterAlgorithm.EM:
-        raise InvalidBranchException("STRUCTURAL_EM must be used with ParameterAlgorithm.EM")
+        raise ValueError("STRUCTURAL_EM must be used with ParameterAlgorithm.EM")
 
     dag: gum.DAG
     match structure_algo:
@@ -46,6 +61,18 @@ def learn(location: str, structure_algo: StructureAlgorithm,
     return learn_parameters(location, dag, parameter_algo)
 
 def learn_agrum_structure(location: str, structure_algo: StructureAlgorithm) -> gum.DAG:
+    """Bayesian network structure learning
+
+            Args:
+                location: The path of the dataset (csv).
+                structure_algo: The structure learning algorithm to use.
+
+            Returns:
+                The learned DAG.
+
+            Raises:
+                InvalidBranchException: If the program enters an unexpected branch.
+            """
     import pyagrum as gum
     learner: gum.BNLearner = gum.BNLearner(location)
     match structure_algo:
@@ -57,6 +84,17 @@ def learn_agrum_structure(location: str, structure_algo: StructureAlgorithm) -> 
 
 def learn_tetrad(location: str, structure_algo: StructureAlgorithm,
                  alpha: float = 0.05) -> Any:
+    """Bayesian network structure learning (delegated to Tetrad)
+
+            Args:
+                location: The path of the dataset (csv).
+                structure_algo: The structure learning algorithm to use.
+                alpha: The alpha parameter for the G^2 test.
+                    Defaults to 0.05.
+
+            Returns:
+                The learned structure (Tetrad object).
+            """
     import pandas as pd
     from pytetrad.tools.TetradSearch import TetradSearch
     data: pd.DataFrame = pd.read_csv(location)
@@ -73,6 +111,16 @@ def learn_tetrad(location: str, structure_algo: StructureAlgorithm,
 
 def learn_parameters(location: str, dag: gum.DAG,
                      parameter_algo: ParameterAlgorithm) -> gum.BayesNet:
+    """Bayesian network parameter learning
+
+            Args:
+                location: The path of the dataset (csv).
+                dag: The structure of the bayesian network.
+                parameter_algo: The parameter learning algorithm to use.
+
+            Returns:
+                The learned bayesian network.
+            """
     learner: gum.BNLearner = gum.BNLearner(location)
 
     match parameter_algo:
