@@ -4,10 +4,12 @@ FROM python:3.11-slim
 # - default-jre: Required by JPype1 and py-tetrad for Java algorithms
 # - git: Required by uv to fetch git repositories
 # - build-essential: Required for compiling some C extensions
+# - graphviz: Required by pydot for rendering network PNGs
 RUN apt-get update && apt-get install -y --no-install-recommends \
     default-jre \
     git \
     build-essential \
+    graphviz \
     && rm -rf /var/lib/apt/lists/*
 
 # Install uv globally

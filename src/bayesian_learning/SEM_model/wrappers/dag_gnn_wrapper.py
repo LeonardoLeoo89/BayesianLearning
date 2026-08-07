@@ -7,9 +7,10 @@ class DAGGNNWrapper(SEMWrapper):
     """Wrapper for the DAG-GNN algorithm."""
 
     def __init__(self, **kwargs):
-        """
+        """Initializes the DAG-GNN wrapper.
+        
         Args:
-            **kwargs: Hyperparameters to pass to DAG-GNN (e.g. epochs=300, lr=3e-3)
+            **kwargs: Hyperparameters to pass to DAG-GNN (e.g. epochs=300, lr=3e-3).
         """
         self.kwargs = kwargs
 

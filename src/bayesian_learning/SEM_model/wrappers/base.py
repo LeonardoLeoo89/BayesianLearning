@@ -7,8 +7,7 @@ class SEMWrapper(ABC):
     
     @abstractmethod
     def learn(self, data: pd.DataFrame) -> SEMResult:
-        """
-        Learns the DAG structure from data.
+        """Learns the DAG structure from data.
         
         Args:
             data: A pandas DataFrame containing the observational data.

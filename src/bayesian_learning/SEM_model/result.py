@@ -5,8 +5,7 @@ class SEMResult:
     """Universal data structure for learned DAGs from SEM algorithms."""
     
     def __init__(self, adjacency_matrix: np.ndarray, node_names: list[str] | None = None):
-        """
-        Initializes a generic SEM result.
+        """Initializes a generic SEM result.
         
         Args:
             adjacency_matrix: A 2D numpy array of shape (d, d) where a non-zero value
@@ -24,8 +23,8 @@ class SEMResult:
             self.node_names = [f"X{i}" for i in range(self.num_nodes)]
             
     def to_networkx(self) -> nx.DiGraph:
-        """
-        Converts the adjacency matrix to a universal NetworkX DiGraph.
+        """Converts the adjacency matrix to a universal NetworkX DiGraph.
+        
         This provides a standardized format for plotting and structural analysis.
         """
         G = nx.from_numpy_array(self.adjacency_matrix, create_using=nx.DiGraph)
@@ -36,7 +35,8 @@ class GranDAGResult(SEMResult):
     """Specific result class for GraN-DAG that extends the universal DAG structure."""
     
     def __init__(self, adjacency_matrix: np.ndarray, trained_model, node_names: list[str] | None = None):
-        """
+        """Initializes a GraN-DAG result.
+        
         Args:
             adjacency_matrix: The learned weighted DAG structure.
             trained_model: The PyTorch neural network model trained by GraN-DAG.
@@ -46,8 +46,7 @@ class GranDAGResult(SEMResult):
         self.trained_model = trained_model
         
     def predict_distribution(self, observations: np.ndarray):
-        """
-        Query probabilities/distributions using the trained neural network.
+        """Query probabilities/distributions using the trained neural network.
         
         Args:
             observations: Input data/samples.

@@ -7,10 +7,11 @@ class GraNDAGWrapper(SEMWrapper):
     """Wrapper for the GraN-DAG model running natively within the process."""
     
     def __init__(self, **kwargs):
-        """
+        """Initializes the GraN-DAG wrapper.
+        
         Args:
-            **kwargs: Hyperparameters to pass to GraN-DAG (e.g. num_train_iter=100000, lr=1e-3, etc.)
-                      Defaults are set internally if not provided.
+            **kwargs: Hyperparameters to pass to GraN-DAG (e.g. num_train_iter=100000, lr=1e-3, etc.).
+                Defaults are set internally if not provided.
         """
         self.kwargs = kwargs
         

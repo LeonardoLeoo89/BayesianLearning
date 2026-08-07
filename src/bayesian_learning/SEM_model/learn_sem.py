@@ -8,8 +8,7 @@ class SEMAlgorithm(Enum):
     GRAN_DAG = auto()
 
 def learn_structure(location: str, algo: SEMAlgorithm, **kwargs) -> SEMResult:
-    """
-    Learns the DAG structure from data.
+    """Learns the DAG structure from data.
     
     Args:
         location: Path to the dataset (CSV file).

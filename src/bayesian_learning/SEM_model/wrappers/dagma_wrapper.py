@@ -8,10 +8,11 @@ class DagmaWrapper(SEMWrapper):
     """Wrapper for the dagma library."""
 
     def __init__(self, model_type: str = 'linear', **kwargs):
-        """
+        """Initializes the Dagma wrapper.
+        
         Args:
-            model_type: 'linear' or 'nonlinear' (MLP)
-            **kwargs: Additional parameters for the Dagma model (e.g. lambda1)
+            model_type: 'linear' or 'nonlinear' (MLP).
+            **kwargs: Additional parameters for the Dagma model (e.g. lambda1).
         """
         self.model_type = model_type
         self.kwargs = kwargs
