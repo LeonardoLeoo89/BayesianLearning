@@ -63,16 +63,16 @@ def learn(location: str, structure_algo: StructureAlgorithm,
 def learn_agrum_structure(location: str, structure_algo: StructureAlgorithm) -> gum.DAG:
     """Bayesian network structure learning
 
-            Args:
-                location: The path of the dataset (csv).
-                structure_algo: The structure learning algorithm to use.
+        Args:
+            location: The path of the dataset (csv).
+            structure_algo: The structure learning algorithm to use.
 
-            Returns:
-                The learned DAG.
+        Returns:
+            The learned DAG.
 
-            Raises:
-                InvalidBranchException: If the program enters an unexpected branch.
-            """
+        Raises:
+            InvalidBranchException: If the program enters an unexpected branch.
+        """
     import pyagrum as gum
     learner: gum.BNLearner = gum.BNLearner(location)
     match structure_algo:
@@ -86,15 +86,15 @@ def learn_tetrad(location: str, structure_algo: StructureAlgorithm,
                  alpha: float = 0.05) -> Any:
     """Bayesian network structure learning (delegated to Tetrad)
 
-            Args:
-                location: The path of the dataset (csv).
-                structure_algo: The structure learning algorithm to use.
-                alpha: The alpha parameter for the G^2 test.
-                    Defaults to 0.05.
+        Args:
+            location: The path of the dataset (csv).
+            structure_algo: The structure learning algorithm to use.
+            alpha: The alpha parameter for the G^2 test.
+                Defaults to 0.05.
 
-            Returns:
-                The learned structure (Tetrad object).
-            """
+        Returns:
+            The learned structure (Tetrad object).
+        """
     import pandas as pd
     from pytetrad.tools.TetradSearch import TetradSearch
     data: pd.DataFrame = pd.read_csv(location)
@@ -113,14 +113,14 @@ def learn_parameters(location: str, dag: gum.DAG,
                      parameter_algo: ParameterAlgorithm) -> gum.BayesNet:
     """Bayesian network parameter learning
 
-            Args:
-                location: The path of the dataset (csv).
-                dag: The structure of the bayesian network.
-                parameter_algo: The parameter learning algorithm to use.
+        Args:
+            location: The path of the dataset (csv).
+            dag: The structure of the bayesian network.
+            parameter_algo: The parameter learning algorithm to use.
 
-            Returns:
-                The learned bayesian network.
-            """
+        Returns:
+            The learned bayesian network.
+        """
     learner: gum.BNLearner = gum.BNLearner(location)
 
     match parameter_algo:
