@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>bayesian_learning package &#8212; BayesianLearning  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="bayesian_learning.SEM_model package" href="bayesian_learning.SEM_model.html" />
+    <link rel="prev" title="bayesian_learning" href="modules.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="bayesian-learning-package">
+<h1>bayesian_learning package<a class="headerlink" href="#bayesian-learning-package" title="Link to this heading">¶</a></h1>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="bayesian_learning.SEM_model.html">bayesian_learning.SEM_model package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="bayesian_learning.SEM_model.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="bayesian_learning.SEM_model.wrappers.html">bayesian_learning.SEM_model.wrappers package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="bayesian_learning.SEM_model.wrappers.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayesian_learning.SEM_model.wrappers.html#module-bayesian_learning.SEM_model.wrappers.base">bayesian_learning.SEM_model.wrappers.base module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayesian_learning.SEM_model.wrappers.html#module-bayesian_learning.SEM_model.wrappers.dag_gnn_wrapper">bayesian_learning.SEM_model.wrappers.dag_gnn_wrapper module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayesian_learning.SEM_model.wrappers.html#module-bayesian_learning.SEM_model.wrappers.dagma_wrapper">bayesian_learning.SEM_model.wrappers.dagma_wrapper module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayesian_learning.SEM_model.wrappers.html#module-bayesian_learning.SEM_model.wrappers.gran_dag_wrapper">bayesian_learning.SEM_model.wrappers.gran_dag_wrapper module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayesian_learning.SEM_model.wrappers.html#module-bayesian_learning.SEM_model.wrappers">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="bayesian_learning.SEM_model.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bayesian_learning.SEM_model.html#module-bayesian_learning.SEM_model.learn_sem">bayesian_learning.SEM_model.learn_sem module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="bayesian_learning.SEM_model.html#bayesian_learning.SEM_model.learn_sem.SEMAlgorithm"><code class="docutils literal notranslate"><span class="pre">SEMAlgorithm</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="bayesian_learning.SEM_model.html#bayesian_learning.SEM_model.learn_sem.SEMAlgorithm.DAGMA"><code class="docutils literal notranslate"><span class="pre">SEMAlgorithm.DAGMA</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayesian_learning.SEM_model.html#bayesian_learning.SEM_model.learn_sem.SEMAlgorithm.DAG_GNN"><code class="docutils literal notranslate"><span class="pre">SEMAlgorithm.DAG_GNN</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayesian_learning.SEM_model.html#bayesian_learning.SEM_model.learn_sem.SEMAlgorithm.GRAN_DAG"><code class="docutils literal notranslate"><span class="pre">SEMAlgorithm.GRAN_DAG</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="bayesian_learning.SEM_model.html#bayesian_learning.SEM_model.learn_sem.learn_structure"><code class="docutils literal notranslate"><span class="pre">learn_structure()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="bayesian_learning.SEM_model.html#module-bayesian_learning.SEM_model.result">bayesian_learning.SEM_model.result module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="bayesian_learning.SEM_model.html#bayesian_learning.SEM_model.result.GranDAGResult"><code class="docutils literal notranslate"><span class="pre">GranDAGResult</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="bayesian_learning.SEM_model.html#bayesian_learning.SEM_model.result.GranDAGResult.predict_distribution"><code class="docutils literal notranslate"><span class="pre">GranDAGResult.predict_distribution()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="bayesian_learning.SEM_model.html#bayesian_learning.SEM_model.result.SEMResult"><code class="docutils literal notranslate"><span class="pre">SEMResult</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="bayesian_learning.SEM_model.html#bayesian_learning.SEM_model.result.SEMResult.to_networkx"><code class="docutils literal notranslate"><span class="pre">SEMResult.to_networkx()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="bayesian_learning.SEM_model.html#module-bayesian_learning.SEM_model">Module contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="bayesian_learning.SEM_model.html#bayesian_learning.SEM_model.GranDAGResult"><code class="docutils literal notranslate"><span class="pre">GranDAGResult</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="bayesian_learning.SEM_model.html#bayesian_learning.SEM_model.GranDAGResult.predict_distribution"><code class="docutils literal notranslate"><span class="pre">GranDAGResult.predict_distribution()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="bayesian_learning.SEM_model.html#bayesian_learning.SEM_model.SEMAlgorithm"><code class="docutils literal notranslate"><span class="pre">SEMAlgorithm</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="bayesian_learning.SEM_model.html#bayesian_learning.SEM_model.SEMAlgorithm.DAGMA"><code class="docutils literal notranslate"><span class="pre">SEMAlgorithm.DAGMA</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayesian_learning.SEM_model.html#bayesian_learning.SEM_model.SEMAlgorithm.DAG_GNN"><code class="docutils literal notranslate"><span class="pre">SEMAlgorithm.DAG_GNN</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayesian_learning.SEM_model.html#bayesian_learning.SEM_model.SEMAlgorithm.GRAN_DAG"><code class="docutils literal notranslate"><span class="pre">SEMAlgorithm.GRAN_DAG</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="bayesian_learning.SEM_model.html#bayesian_learning.SEM_model.SEMResult"><code class="docutils literal notranslate"><span class="pre">SEMResult</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="bayesian_learning.SEM_model.html#bayesian_learning.SEM_model.SEMResult.to_networkx"><code class="docutils literal notranslate"><span class="pre">SEMResult.to_networkx()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="bayesian_learning.SEM_model.html#bayesian_learning.SEM_model.learn_structure"><code class="docutils literal notranslate"><span class="pre">learn_structure()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="bayesian_learning.categorical_model.html">bayesian_learning.categorical_model package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="bayesian_learning.categorical_model.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="bayesian_learning.categorical_model.categorical_translator.html">bayesian_learning.categorical_model.categorical_translator package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="bayesian_learning.categorical_model.categorical_translator.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayesian_learning.categorical_model.categorical_translator.html#module-bayesian_learning.categorical_model.categorical_translator.tetrad2agrum">bayesian_learning.categorical_model.categorical_translator.tetrad2agrum module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayesian_learning.categorical_model.categorical_translator.html#module-bayesian_learning.categorical_model.categorical_translator">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="bayesian_learning.categorical_model.genetic_K2.html">bayesian_learning.categorical_model.genetic_K2 package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="bayesian_learning.categorical_model.genetic_K2.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayesian_learning.categorical_model.genetic_K2.html#module-bayesian_learning.categorical_model.genetic_K2.genetic_K2">bayesian_learning.categorical_model.genetic_K2.genetic_K2 module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayesian_learning.categorical_model.genetic_K2.html#module-bayesian_learning.categorical_model.genetic_K2">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="bayesian_learning.categorical_model.parameter_learning.html">bayesian_learning.categorical_model.parameter_learning package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="bayesian_learning.categorical_model.parameter_learning.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayesian_learning.categorical_model.parameter_learning.html#module-bayesian_learning.categorical_model.parameter_learning.shrinkage">bayesian_learning.categorical_model.parameter_learning.shrinkage module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayesian_learning.categorical_model.parameter_learning.html#module-bayesian_learning.categorical_model.parameter_learning">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="bayesian_learning.categorical_model.structural_em.html">bayesian_learning.categorical_model.structural_em package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="bayesian_learning.categorical_model.structural_em.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayesian_learning.categorical_model.structural_em.html#module-bayesian_learning.categorical_model.structural_em.structural_em">bayesian_learning.categorical_model.structural_em.structural_em module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayesian_learning.categorical_model.structural_em.html#module-bayesian_learning.categorical_model.structural_em">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="bayesian_learning.categorical_model.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bayesian_learning.categorical_model.html#module-bayesian_learning.categorical_model.learn_categorical">bayesian_learning.categorical_model.learn_categorical module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="bayesian_learning.categorical_model.html#bayesian_learning.categorical_model.learn_categorical.InvalidBranchException"><code class="docutils literal notranslate"><span class="pre">InvalidBranchException</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayesian_learning.categorical_model.html#bayesian_learning.categorical_model.learn_categorical.ParameterAlgorithm"><code class="docutils literal notranslate"><span class="pre">ParameterAlgorithm</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="bayesian_learning.categorical_model.html#bayesian_learning.categorical_model.learn_categorical.ParameterAlgorithm.BAYESIAN_DIRICHLET_PRIORS"><code class="docutils literal notranslate"><span class="pre">ParameterAlgorithm.BAYESIAN_DIRICHLET_PRIORS</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayesian_learning.categorical_model.html#bayesian_learning.categorical_model.learn_categorical.ParameterAlgorithm.EM"><code class="docutils literal notranslate"><span class="pre">ParameterAlgorithm.EM</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayesian_learning.categorical_model.html#bayesian_learning.categorical_model.learn_categorical.ParameterAlgorithm.MLE"><code class="docutils literal notranslate"><span class="pre">ParameterAlgorithm.MLE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayesian_learning.categorical_model.html#bayesian_learning.categorical_model.learn_categorical.ParameterAlgorithm.SHRINKAGE_ESTIMATOR"><code class="docutils literal notranslate"><span class="pre">ParameterAlgorithm.SHRINKAGE_ESTIMATOR</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="bayesian_learning.categorical_model.html#bayesian_learning.categorical_model.learn_categorical.StructureAlgorithm"><code class="docutils literal notranslate"><span class="pre">StructureAlgorithm</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="bayesian_learning.categorical_model.html#bayesian_learning.categorical_model.learn_categorical.StructureAlgorithm.FCI"><code class="docutils literal notranslate"><span class="pre">StructureAlgorithm.FCI</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayesian_learning.categorical_model.html#bayesian_learning.categorical_model.learn_categorical.StructureAlgorithm.GENETIC_K2"><code class="docutils literal notranslate"><span class="pre">StructureAlgorithm.GENETIC_K2</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayesian_learning.categorical_model.html#bayesian_learning.categorical_model.learn_categorical.StructureAlgorithm.HILL_CLIMBING"><code class="docutils literal notranslate"><span class="pre">StructureAlgorithm.HILL_CLIMBING</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayesian_learning.categorical_model.html#bayesian_learning.categorical_model.learn_categorical.StructureAlgorithm.PC"><code class="docutils literal notranslate"><span class="pre">StructureAlgorithm.PC</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayesian_learning.categorical_model.html#bayesian_learning.categorical_model.learn_categorical.StructureAlgorithm.RFCI"><code class="docutils literal notranslate"><span class="pre">StructureAlgorithm.RFCI</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayesian_learning.categorical_model.html#bayesian_learning.categorical_model.learn_categorical.StructureAlgorithm.STRUCTURAL_EM"><code class="docutils literal notranslate"><span class="pre">StructureAlgorithm.STRUCTURAL_EM</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="bayesian_learning.categorical_model.html#bayesian_learning.categorical_model.learn_categorical.learn"><code class="docutils literal notranslate"><span class="pre">learn()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayesian_learning.categorical_model.html#bayesian_learning.categorical_model.learn_categorical.learn_agrum_structure"><code class="docutils literal notranslate"><span class="pre">learn_agrum_structure()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayesian_learning.categorical_model.html#bayesian_learning.categorical_model.learn_categorical.learn_parameters"><code class="docutils literal notranslate"><span class="pre">learn_parameters()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayesian_learning.categorical_model.html#bayesian_learning.categorical_model.learn_categorical.learn_tetrad"><code class="docutils literal notranslate"><span class="pre">learn_tetrad()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="bayesian_learning.categorical_model.html#module-bayesian_learning.categorical_model">Module contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="bayesian_learning.categorical_model.html#bayesian_learning.categorical_model.ParameterAlgorithm"><code class="docutils literal notranslate"><span class="pre">ParameterAlgorithm</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="bayesian_learning.categorical_model.html#bayesian_learning.categorical_model.ParameterAlgorithm.BAYESIAN_DIRICHLET_PRIORS"><code class="docutils literal notranslate"><span class="pre">ParameterAlgorithm.BAYESIAN_DIRICHLET_PRIORS</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayesian_learning.categorical_model.html#bayesian_learning.categorical_model.ParameterAlgorithm.EM"><code class="docutils literal notranslate"><span class="pre">ParameterAlgorithm.EM</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayesian_learning.categorical_model.html#bayesian_learning.categorical_model.ParameterAlgorithm.MLE"><code class="docutils literal notranslate"><span class="pre">ParameterAlgorithm.MLE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayesian_learning.categorical_model.html#bayesian_learning.categorical_model.ParameterAlgorithm.SHRINKAGE_ESTIMATOR"><code class="docutils literal notranslate"><span class="pre">ParameterAlgorithm.SHRINKAGE_ESTIMATOR</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="bayesian_learning.categorical_model.html#bayesian_learning.categorical_model.StructureAlgorithm"><code class="docutils literal notranslate"><span class="pre">StructureAlgorithm</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="bayesian_learning.categorical_model.html#bayesian_learning.categorical_model.StructureAlgorithm.FCI"><code class="docutils literal notranslate"><span class="pre">StructureAlgorithm.FCI</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayesian_learning.categorical_model.html#bayesian_learning.categorical_model.StructureAlgorithm.GENETIC_K2"><code class="docutils literal notranslate"><span class="pre">StructureAlgorithm.GENETIC_K2</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayesian_learning.categorical_model.html#bayesian_learning.categorical_model.StructureAlgorithm.HILL_CLIMBING"><code class="docutils literal notranslate"><span class="pre">StructureAlgorithm.HILL_CLIMBING</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayesian_learning.categorical_model.html#bayesian_learning.categorical_model.StructureAlgorithm.PC"><code class="docutils literal notranslate"><span class="pre">StructureAlgorithm.PC</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayesian_learning.categorical_model.html#bayesian_learning.categorical_model.StructureAlgorithm.RFCI"><code class="docutils literal notranslate"><span class="pre">StructureAlgorithm.RFCI</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayesian_learning.categorical_model.html#bayesian_learning.categorical_model.StructureAlgorithm.STRUCTURAL_EM"><code class="docutils literal notranslate"><span class="pre">StructureAlgorithm.STRUCTURAL_EM</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="bayesian_learning.categorical_model.html#bayesian_learning.categorical_model.learn"><code class="docutils literal notranslate"><span class="pre">learn()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="bayesian_learning.utils.html">bayesian_learning.utils package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="bayesian_learning.utils.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bayesian_learning.utils.html#module-bayesian_learning.utils.export">bayesian_learning.utils.export module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="bayesian_learning.utils.html#bayesian_learning.utils.export.export_categorical_from_bif"><code class="docutils literal notranslate"><span class="pre">export_categorical_from_bif()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayesian_learning.utils.html#bayesian_learning.utils.export.export_categorical_results"><code class="docutils literal notranslate"><span class="pre">export_categorical_results()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayesian_learning.utils.html#bayesian_learning.utils.export.export_sem_results"><code class="docutils literal notranslate"><span class="pre">export_sem_results()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayesian_learning.utils.html#bayesian_learning.utils.export.plot_and_save_networkx"><code class="docutils literal notranslate"><span class="pre">plot_and_save_networkx()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="bayesian_learning.utils.html#module-bayesian_learning.utils">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+</section>
+<section id="module-bayesian_learning.cli">
+<span id="bayesian-learning-cli-module"></span><h2>bayesian_learning.cli module<a class="headerlink" href="#module-bayesian_learning.cli" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="bayesian_learning.cli.main">
+<span class="sig-prename descclassname"><span class="pre">bayesian_learning.cli.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bayesian_learning.cli.main" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-bayesian_learning">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-bayesian_learning" title="Link to this heading">¶</a></h2>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">BayesianLearning</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">bayesian_learning</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">bayesian_learning package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="bayesian_learning.SEM_model.html">bayesian_learning.SEM_model package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayesian_learning.categorical_model.html">bayesian_learning.categorical_model package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayesian_learning.utils.html">bayesian_learning.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-bayesian_learning.cli">bayesian_learning.cli module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#bayesian_learning.cli.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-bayesian_learning">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">bayesian_learning</a><ul>
+      <li>Previous: <a href="modules.html" title="previous chapter">bayesian_learning</a></li>
+      <li>Next: <a href="bayesian_learning.SEM_model.html" title="next chapter">bayesian_learning.SEM_model package</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.1.0</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/bayesian_learning.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

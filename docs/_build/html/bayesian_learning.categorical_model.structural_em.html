@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>bayesian_learning.categorical_model.structural_em package &#8212; BayesianLearning  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="bayesian_learning.utils package" href="bayesian_learning.utils.html" />
+    <link rel="prev" title="bayesian_learning.categorical_model.parameter_learning package" href="bayesian_learning.categorical_model.parameter_learning.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="bayesian-learning-categorical-model-structural-em-package">
+<h1>bayesian_learning.categorical_model.structural_em package<a class="headerlink" href="#bayesian-learning-categorical-model-structural-em-package" title="Link to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+</section>
+<section id="module-bayesian_learning.categorical_model.structural_em.structural_em">
+<span id="bayesian-learning-categorical-model-structural-em-structural-em-module"></span><h2>bayesian_learning.categorical_model.structural_em.structural_em module<a class="headerlink" href="#module-bayesian_learning.categorical_model.structural_em.structural_em" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="bayesian_learning.categorical_model.structural_em.structural_em.generate_ess_dataset">
+<span class="sig-prename descclassname"><span class="pre">bayesian_learning.categorical_model.structural_em.structural_em.</span></span><span class="sig-name descname"><span class="pre">generate_ess_dataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BayesNet</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#bayesian_learning.categorical_model.structural_em.structural_em.generate_ess_dataset" title="Link to this definition">¶</a></dt>
+<dd><p>ESS dataset generator.</p>
+<p>Generates a dataset weighted by the
+expected sufficient statistics calculated from a
+given dataset and an already defined bayesian network.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bn</strong> – A Bayesian network.</p></li>
+<li><p><strong>df</strong> – A dataframe.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The ESS-based dataframe.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bayesian_learning.categorical_model.structural_em.structural_em.structural_em">
+<span class="sig-prename descclassname"><span class="pre">bayesian_learning.categorical_model.structural_em.structural_em.</span></span><span class="sig-name descname"><span class="pre">structural_em</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">location</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_bn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BayesNet</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_iters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.001</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">BayesNet</span></span></span><a class="headerlink" href="#bayesian_learning.categorical_model.structural_em.structural_em.structural_em" title="Link to this definition">¶</a></dt>
+<dd><p>Structural EM algorithm.</p>
+<p>Implementation of the EM concept for bayesian network learning,
+capable of handling missing data.
+The algorithm alternates between an Expectation phase (ESS computation)
+and a Maximization phase (network learning)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>location</strong> – The path of the dataset (csv).</p></li>
+<li><p><strong>initial_bn</strong> – Starting bayesian network.</p></li>
+<li><p><strong>max_iters</strong> – The number of maximum iterations.
+Defaults to 100.</p></li>
+<li><p><strong>epsilon</strong> – The epsilon parameter for parameter EM.
+Defaults to 1e-3.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The learned bayesian network.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-bayesian_learning.categorical_model.structural_em">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-bayesian_learning.categorical_model.structural_em" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="bayesian_learning.categorical_model.structural_em.structural_em">
+<span class="sig-prename descclassname"><span class="pre">bayesian_learning.categorical_model.structural_em.</span></span><span class="sig-name descname"><span class="pre">structural_em</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">location</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_bn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BayesNet</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_iters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.001</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">BayesNet</span></span></span><a class="headerlink" href="#bayesian_learning.categorical_model.structural_em.structural_em" title="Link to this definition">¶</a></dt>
+<dd><p>Structural EM algorithm.</p>
+<p>Implementation of the EM concept for bayesian network learning,
+capable of handling missing data.
+The algorithm alternates between an Expectation phase (ESS computation)
+and a Maximization phase (network learning)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>location</strong> – The path of the dataset (csv).</p></li>
+<li><p><strong>initial_bn</strong> – Starting bayesian network.</p></li>
+<li><p><strong>max_iters</strong> – The number of maximum iterations.
+Defaults to 100.</p></li>
+<li><p><strong>epsilon</strong> – The epsilon parameter for parameter EM.
+Defaults to 1e-3.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The learned bayesian network.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">BayesianLearning</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">bayesian_learning</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="bayesian_learning.html">bayesian_learning package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="bayesian_learning.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="bayesian_learning.SEM_model.html">bayesian_learning.SEM_model package</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="bayesian_learning.categorical_model.html">bayesian_learning.categorical_model package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayesian_learning.utils.html">bayesian_learning.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="bayesian_learning.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayesian_learning.html#module-bayesian_learning.cli">bayesian_learning.cli module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayesian_learning.html#module-bayesian_learning">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">bayesian_learning</a><ul>
+  <li><a href="bayesian_learning.html">bayesian_learning package</a><ul>
+  <li><a href="bayesian_learning.categorical_model.html">bayesian_learning.categorical_model package</a><ul>
+      <li>Previous: <a href="bayesian_learning.categorical_model.parameter_learning.html" title="previous chapter">bayesian_learning.categorical_model.parameter_learning package</a></li>
+      <li>Next: <a href="bayesian_learning.utils.html" title="next chapter">bayesian_learning.utils package</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.1.0</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/bayesian_learning.categorical_model.structural_em.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
