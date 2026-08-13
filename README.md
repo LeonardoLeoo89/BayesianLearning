@@ -33,3 +33,8 @@ docker run --rm bayesian-learning --help
 # È possibile salvare i grafici e i dati in locale montando un volume durante l'esecuzione:
 docker run --rm -v $(pwd)/results:/app/results bayesian-learning uv run python scripts/benchmarks/evaluate_accuracy.py
 ```
+
+## Documentazione
+
+Una versione HTML della documentazione è consultabile in `docs/_build`, generata
+a partire dalle docstring che corredano il codice.

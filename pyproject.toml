@@ -49,4 +49,5 @@ gran-dag = { git = "https://github.com/LeonardoLeoo89/GraN-DAG.git", rev = "mast
 dev = [
     "flake8>=7.3.0",
     "mypy>=2.3.0",
+    "sphinx>=9.0.4",
 ]
